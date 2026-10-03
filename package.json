@@ -1,0 +1,29 @@
+{
+  "name": "japan-rediscover-astro-tina",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev --host 0.0.0.0 --port 3000",
+    "tina:dev": "tinacms dev -c \"astro dev --host 0.0.0.0 --port 3000\"",
+    "build": "BUILD_TARGET=cloudflare astro build",
+    "build:dev": "astro build",
+    "preview": "astro preview",
+    "tina:build": "echo 'Tina build skipped in local mode'"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@astrojs/node": "^8.3.4",
+    "@astrojs/tailwind": "^5.1.0",
+    "@tinacms/cli": "^2.0.0",
+    "astro": "^4.16.0",
+    "tailwindcss": "^3.4.0",
+    "tinacms": "^2.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "@types/node": "^20.19.27",
+    "@types/react": "^19.2.14",
+    "playwright": "^1.42.1",
+    "typescript": "^5.9.3"
+  }
+}

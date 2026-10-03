@@ -1,0 +1,91 @@
+---
+import { defaultLocale, getUIStrings, type Locale } from '../../i18n';
+
+interface SocialLink {
+  icon: string;
+  href: string;
+  label: string;
+}
+
+interface FooterLink {
+  label: string;
+  href: string;
+}
+
+interface Logo {
+  image?: string;
+  text?: string;
+}
+
+interface Props {
+  siteName?: string;
+  logo?: Logo | string;
+  copyright?: string;
+  socialLinks?: SocialLink[];
+  footerLinks?: FooterLink[];
+  /** 現在のロケール */
+  lang?: Locale;
+}
+
+const { 
+  siteName = "Japan Rediscover",
+  logo,
+  copyright,
+  socialLinks = [
+    { icon: 'public', href: '#', label: 'Website' },
+    { icon: 'share', href: '#', label: 'Share' },
+    { icon: 'mail', href: '#contact', label: 'Email' }
+  ],
+  footerLinks = [],
+  lang = defaultLocale,
+} = Astro.props;
+
+const ui = getUIStrings(lang);
+const copyrightText = copyright ?? ui.copyright;
+
+// Handle both old string format and new object format
+const logoData = typeof logo === 'string' ? { text: logo } : (logo || { text: siteName });
+---
+
+<footer class="w-full bg-background-light dark:bg-background-dark border-t border-border-light dark:border-border-dark">
+  <div class="max-w-5xl mx-auto py-8 px-6 sm:px-10 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div class="flex flex-col sm:flex-row items-center gap-4">
+      <div class="flex flex-col items-center">
+        {logoData.image && (
+          <img src={logoData.image} alt={logoData.text || siteName} class="h-8 w-auto object-contain" />
+        )}
+        {logoData.text && (
+          <p class="text-xs font-medium leading-tight text-center mt-1">{logoData.text}</p>
+        )}
+      </div>
+      <p class="text-sm text-subtle-light dark:text-subtle-dark">{copyrightText}</p>
+    </div>
+    
+    {footerLinks && footerLinks.length > 0 && (
+      <div class="flex items-center gap-6">
+        {footerLinks.map((link) => (
+          <a 
+            href={link.href}
+            class="text-sm text-subtle-light dark:text-subtle-dark hover:text-text-light dark:hover:text-text-dark transition-colors"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    )}
+    
+    <div class="flex items-center gap-5">
+      {socialLinks.map((link) => (
+        <a 
+          href={link.href}
+          aria-label={link.label}
+          class="text-subtle-light dark:text-subtle-dark hover:text-text-light dark:hover:text-text-dark transition-colors"
+        >
+          <span class="material-symbols-outlined" style="font-size: 20px">
+            {link.icon}
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>

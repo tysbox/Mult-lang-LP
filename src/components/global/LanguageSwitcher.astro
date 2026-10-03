@@ -1,0 +1,55 @@
+---
+/**
+ * 言語切替コンポーネント
+ *
+ * 現在のパスを保ったまま、別ロケールの同等ページへリンクします。
+ * 例: /ja/#faq で EN を選ぶと /#faq へ。
+ */
+import { locales, localeNames, localeShort, defaultLocale, type Locale } from '../../i18n/config';
+import { switchLocalePath } from '../../i18n/utils';
+
+interface Props {
+  /** 現在のロケール */
+  current: Locale;
+  /** 現在のパス（Astro.url.pathname を渡す） */
+  currentPath: string;
+  /** コンパクト表示（ヘッダー用）にするか */
+  compact?: boolean;
+  /** 追加クラス */
+  class?: string;
+}
+
+const { current, currentPath, compact = false, class: className = '' } = Astro.props;
+
+// 表示するロケール（翻訳済みを優先しつつ、全スロットを表示）
+const items = locales.map((lang) => ({
+  lang,
+  label: compact ? localeShort[lang] : localeNames[lang],
+  href: switchLocalePath(currentPath, lang),
+  isCurrent: lang === current,
+}));
+---
+
+<nav
+  class={`lang-switcher flex items-center gap-1 ${className}`}
+  aria-label="Language"
+>
+  {items.map((item, i) => (
+    <>
+      {i > 0 && <span class="text-subtle-light dark:text-subtle-dark opacity-40 select-none">/</span>}
+      <a
+        href={item.href}
+        hreflang={item.lang}
+        aria-current={item.isCurrent ? 'true' : undefined}
+        class:list={[
+          'text-xs font-medium leading-normal px-1.5 py-1 rounded transition-colors',
+          item.isCurrent
+            ? 'text-primary font-bold'
+            : 'text-subtle-light dark:text-subtle-dark hover:text-primary',
+        ]}
+      >
+        {item.label}
+      </a>
+    </>
+  ))}
+</nav>

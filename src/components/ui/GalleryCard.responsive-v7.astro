@@ -1,0 +1,57 @@
+---
+interface Props {
+  image: string;
+  alt: string;
+  title: string;
+  description: string;
+}
+
+const { image, alt, title, description } = Astro.props;
+
+// Reverted to simple text interpolation (no html conversion)
+---
+
+<style>
+  /* Tablet: 957px to 1023px - 75% scale */
+  @media (max-width: 1023px) and (min-width: 957px) {
+    img {
+      width: 600px !important;
+      height: 600px !important;
+    }
+    
+    .flex-shrink-0 {
+      width: 600px !important;
+    }
+    
+    h4 {
+      font-size: calc(1.125rem * 0.75);
+    }
+  }
+  
+  /* Smartphone: 956px and below - 60% scale */
+  @media (max-width: 956px) {
+    img {
+      width: 480px !important;
+      height: 480px !important;
+    }
+    
+    .flex-shrink-0 {
+      width: 480px !important;
+    }
+    
+    h4 {
+      font-size: 0.75rem;
+    }
+  }
+</style>
+
+<div class="flex-shrink-0 w-[800px] space-y-4 text-center snap-center">
+  <img 
+    src={image} 
+    alt={alt} 
+    class="w-[800px] h-[800px] object-cover rounded-lg shadow-md" 
+    loading="lazy"
+  />
+  <h4 class="text-lg font-bold">{title}</h4>
+  <p class="text-subtle-light dark:text-subtle-dark max-w-md mx-auto">{description}</p>
+</div>

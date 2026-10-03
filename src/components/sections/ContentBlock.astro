@@ -1,0 +1,78 @@
+---
+import type { SectionContent } from '../../types';
+
+interface Props extends SectionContent {
+  isSplit?: boolean;
+  ctaText?: string;
+  ctaHref?: string;
+}
+
+const { 
+  id, 
+  preheading, 
+  title, 
+  description, 
+  image, 
+  imageAlt,
+  isSplit = false,
+  ctaText,
+  ctaHref
+} = Astro.props; 
+
+// Reverted to simple text interpolation (no html conversion)
+---
+
+<section id={id} class="py-20 text-center">
+  {isSplit ? (
+    <div class="flex flex-col md:flex-row items-center gap-12">
+      <div class="md:w-1/2 text-left space-y-4">
+        {preheading && (
+          <h2 class="text-primary dark:text-primary/80 text-sm font-bold leading-normal tracking-[0.015em]">
+            {preheading}
+          </h2>
+        )}
+        <h3 class="text-text-light dark:text-text-dark text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+          {title}
+        </h3>
+        <p class="text-subtle-light dark:text-subtle-dark text-base font-normal leading-relaxed mt-2 whitespace-pre-line">{description}</p>
+      </div>
+      <div class="md:w-1/2">
+        {image && (
+          <div>
+            <img 
+              src={image} 
+              alt={imageAlt || title} 
+              class="rounded-lg shadow-xl aspect-square object-cover w-full max-w-sm mx-auto"
+            />
+
+            {id === 'founder' && (
+              <div class="mt-14 text-center">
+                <a
+                  href="https://hidden-treasure.bisen-kyoto.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Continue with my reflections (opens in new tab)"
+                  class="inline-block text-base font-normal text-subtle-light dark:text-subtle-dark hover:underline transform transition-transform duration-150 ease-in-out hover:scale-125 focus:outline-none"
+                >
+                  Continue with my reflections  &gt;&gt;
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div class="flex flex-col gap-4">
+      {preheading && (
+        <h2 class="text-primary dark:text-primary/80 text-sm font-bold leading-normal tracking-[0.015em]">
+          {preheading}
+        </h2>
+      )}
+      <h3 class="text-text-light dark:text-text-dark text-3xl font-bold leading-tight tracking-tight md:text-4xl max-w-3xl mx-auto">
+        {title}
+      </h3>
+      <p class="text-subtle-light dark:text-subtle-dark text-base font-normal leading-relaxed max-w-2xl mx-auto mt-2 whitespace-pre-line">{description}</p>
+    </div>
+  )}
+</section>

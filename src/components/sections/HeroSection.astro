@@ -1,0 +1,61 @@
+---
+import type { HeroContent } from '../../types';
+
+interface Props extends HeroContent {}
+
+const { title, subtitle, ctaText, bgImage, alt } = Astro.props;
+
+// Reverted to simple text interpolation (no html conversion)
+---
+
+<div class="relative flex flex-col items-center justify-center overflow-hidden min-h-[1200px] w-full">
+  <!-- Parallax Background -->
+  <div 
+    id="hero-bg"
+    class="absolute inset-0 w-full h-full bg-cover bg-center will-change-transform"
+    style={`background-image: url("${bgImage}")`}
+    role="img"
+    aria-label={alt}
+  />
+  
+  <!-- Overlay Gradient -->
+  <div class="absolute inset-0 w-full h-full bg-gradient-to-b from-background-light/0 via-background-light/10 to-background-light dark:from-background-dark/0 dark:via-background-dark/10 dark:to-background-dark" />
+
+  <!-- Content -->
+  <div class="relative z-[1] flex flex-col gap-8 text-center px-4 max-w-5xl mx-auto">
+    <h1 class="text-text-light dark:text-text-dark text-5xl font-black leading-tight tracking-[-0.033em] md:text-7xl">
+      {title}
+    </h1>
+    <h2 class="text-gray-800 dark:text-gray-200 text-lg font-normal leading-relaxed md:text-xl max-w-2xl mx-auto whitespace-pre-line">
+      {subtitle}
+    </h2>
+  </div>
+
+  <!-- CTA -->
+  <div class="absolute bottom-20 z-[1] flex justify-center mt-6">
+    <a 
+      href="#founder"
+      class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-secondary text-white text-base font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity"
+    >
+      <span class="truncate">{ctaText}</span>
+    </a>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-text-light dark:text-text-dark animate-bounce">
+    <span class="material-symbols-outlined">south</span>
+  </div>
+</div>
+
+<script>
+  const heroBg = document.getElementById('hero-bg');
+  
+  const handleScroll = () => {
+    const offset = window.scrollY;
+    if (heroBg) {
+      heroBg.style.transform = `translateZ(0) translateY(${offset * 0.3}px)`;
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+</script>

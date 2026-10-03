@@ -1,0 +1,84 @@
+---
+/**
+ * ホームページ本体（ロケール対応）
+ *
+ * 各ルート（/ と /[lang]/）から呼び出され、指定ロケールのコンテンツを描画します。
+ */
+import MainLayout from '../layouts/MainLayout.astro';
+import Header from './global/Header.astro';
+import Footer from './global/Footer.astro';
+import HeroSection from './sections/HeroSection.astro';
+import ContentBlock from './sections/ContentBlock.astro';
+import StickyNav from './sections/StickyNav.astro';
+import GallerySlider from './sections/GallerySlider.astro';
+import FAQSection from './sections/FAQSection.astro';
+import ContactSection from './sections/ContactSection.astro';
+import type { SiteData } from '../types';
+import { defaultLocale, getUIStrings, loadPageData, loadGlobalSettings, type Locale } from '../i18n';
+import { SITE_DATA } from '../data/content';
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+
+// ロケール別コンテンツを読み込み（無ければ en にフォールバック）
+let pageData: SiteData = loadPageData(lang) ?? SITE_DATA;
+let globalSettings = loadGlobalSettings(lang);
+
+if (!globalSettings) {
+  globalSettings = {
+    header: { logo: { text: 'Japan Rediscover' }, menuItems: [] },
+    footer: {},
+  };
+}
+
+const ui = getUIStrings(lang);
+---
+
+<MainLayout lang={lang} title={ui.meta.title} description={ui.meta.description}>
+  <Header
+    navItems={globalSettings.header.menuItems}
+    logo={globalSettings.header.logo}
+    lang={lang}
+    currentPath={Astro.url.pathname}
+  />
+
+  <HeroSection {...pageData.hero} />
+
+  <main class="w-full max-w-5xl mx-auto px-6 sm:px-10 lg:px-8">
+    <!-- Founder Section - Split Layout -->
+    <ContentBlock {...pageData.founder} isSplit={true} />
+
+    <!-- Journeys Section - Centered Text -->
+    <ContentBlock {...pageData.journeys} />
+
+    <!-- Intro 'Ma' Section -->
+    <ContentBlock {...pageData.intro} />
+
+    <!-- Sticky Sub-navigation -->
+    <StickyNav sections={pageData.galleries} />
+
+    <!-- Gallery Sections -->
+    <div class="pt-28 sm:pt-40 space-y-28 sm:space-y-40">
+      {pageData.galleries.map((gallery) => (
+        <GallerySlider {...gallery} />
+      ))}
+    </div>
+
+    <!-- FAQ -->
+    <FAQSection {...pageData.faq} />
+
+    <!-- Contact -->
+    <ContactSection {...pageData.contact} lang={lang} />
+  </main>
+
+  <Footer
+    logo={globalSettings.header.logo}
+    copyright={globalSettings.footer?.copyright}
+    socialLinks={globalSettings.footer?.socialLinks}
+    footerLinks={globalSettings.footer?.footerLinks}
+    lang={lang}
+  />
+</MainLayout>

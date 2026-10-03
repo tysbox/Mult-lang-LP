@@ -1,0 +1,26 @@
+# Cloudflare Pages 設定ファイル
+#
+# 注意: このファイルは「ローカル開発専用」として使用します。
+# `pages_build_output_dir` を意図的に記載していません。
+#
+# 理由:
+#   `pages_build_output_dir` を記載すると、この wrangler.toml が
+#   Cloudflare Pages プロジェクト設定の「唯一の正（source of truth）」となり、
+#   ダッシュボード上で環境変数（GITHUB_TOKEN 等）を編集できなくなります。
+#   本番の環境変数は Cloudflare ダッシュボードで管理するため、ここでは記載しません。
+#
+# 本番デプロイ設定（ビルドコマンド / 出力ディレクトリ / 環境変数）は
+# Cloudflare ダッシュボード側で管理されています。
+#   - Pages プロジェクト名: biscene--lp
+#   - カスタムドメイン: discover.bisen-kyoto.com
+#   - ビルド出力: dist
+
+name = "biscene--lp"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ローカル開発（wrangler pages dev）用の環境変数。
+# 本番の値はダッシュボードで設定してください（秘密情報はここに書かない）。
+[vars]
+GITHUB_REPOSITORY = "tysbox/BiScene--LP"
+GITHUB_BRANCH = "master"

@@ -1,0 +1,154 @@
+---
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { defaultLocale, getUIStrings, localizedHref, type Locale } from '../../i18n';
+
+export interface NavItem {
+  label: string;
+  href: string;
+}
+
+interface Logo {
+  image?: string;
+  text?: string;
+}
+
+interface Props {
+  navItems: NavItem[];
+  logo?: Logo | string;
+  siteName?: string;
+  /** 現在のロケール */
+  lang?: Locale;
+  /** 現在のパス（言語切替用） */
+  currentPath?: string;
+}
+
+const { 
+  navItems,
+  logo,
+  siteName = "Japan Rediscover",
+  lang = defaultLocale,
+  currentPath = '/',
+} = Astro.props;
+
+const ui = getUIStrings(lang);
+
+// Handle both old string format and new object format
+const logoData = typeof logo === 'string' ? { text: logo } : (logo || { text: siteName });
+
+// ロケールに応じてアンカーリンクを補正（例: #faq → /ja/#faq）
+const localizedNav = navItems.map((item) => ({
+  ...item,
+  href: localizedHref(lang, item.href),
+}));
+const homeHref = localizedHref(lang, '/');
+const contactHref = localizedHref(lang, '#contact');
+---
+
+<header 
+  id="main-header"
+  class="fixed top-0 left-0 right-0 z-10 flex items-center justify-between whitespace-nowrap px-6 sm:px-10 lg:px-20 py-5 transition-all duration-300 bg-transparent"
+>
+  <a href={homeHref} class="flex items-center gap-3 text-text-light dark:text-text-dark">
+    <div class="flex flex-col items-center">
+      {logoData.image && (
+        <img src={logoData.image} alt={logoData.text || siteName} class="h-10 w-auto object-contain" />
+      )}
+      {logoData.text && (
+        <p class="text-xs font-medium leading-tight text-center mt-1">{logoData.text}</p>
+      )}
+    </div>
+  </a>
+
+  <div class="hidden md:flex flex-1 justify-end items-center gap-8">
+    <div class="flex items-center gap-9">
+      {localizedNav.map((item) => (
+        <a 
+          href={item.href}
+          class="text-text-light dark:text-text-dark text-sm font-medium leading-normal hover:text-primary transition-colors"
+        >
+          {item.label}
+        </a>
+      ))}
+    </div>
+    <LanguageSwitcher current={lang} currentPath={currentPath} compact={true} />
+    <a 
+      href={contactHref}
+      class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-white/10 backdrop-blur-sm text-text-light dark:text-text-dark text-sm font-bold leading-normal tracking-[0.015em] hover:bg-white/20 transition-colors"
+    >
+      <span class="truncate">{ui.contact}</span>
+    </a>
+  </div>
+
+  <!-- Mobile: hamburger + dropdown menu -->
+  <div class="flex md:hidden items-center">
+    <button id="mobile-menu-toggle" aria-expanded="false" aria-controls="mobile-nav" class="p-2 rounded-md text-text-light dark:text-text-dark focus:outline-none focus:ring">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-nav" class="hidden absolute right-6 top-full mt-2 w-56 bg-background-light/60 dark:bg-background-dark/60 border border-gray-200/10 rounded-lg shadow-lg z-20">
+    <nav class="flex flex-col px-4 py-3 gap-2">
+      {localizedNav.map((item) => (
+        <a href={item.href} class="block w-full text-right text-text-light dark:text-text-dark text-sm font-medium leading-normal px-2 py-2 rounded hover:bg-white/5 transition-colors">
+          {item.label}
+        </a>
+      ))}
+      <a href={contactHref} class="block w-full text-right text-text-light dark:text-text-dark text-sm font-medium leading-normal px-2 py-2 rounded hover:bg-white/5 transition-colors">{ui.contact}</a>
+      <div class="pt-2 border-t border-gray-200/10">
+        <LanguageSwitcher current={lang} currentPath={currentPath} class="justify-end" />
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById('main-header');
+  
+  const handleScroll = () => {
+    if (window.scrollY > 50) {
+      header?.classList.add('bg-background-light/80', 'dark:bg-background-dark/80', 'backdrop-blur-lg', 'shadow-sm');
+      header?.classList.remove('bg-transparent');
+    } else {
+      header?.classList.remove('bg-background-light/80', 'dark:bg-background-dark/80', 'backdrop-blur-lg', 'shadow-sm');
+      header?.classList.add('bg-transparent');
+    }
+  };
+
+  window.addEventListener('scroll', handleScroll);
+
+  // Mobile menu toggle
+  const mobileToggle = document.getElementById('mobile-menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+
+  const closeMobileNav = () => {
+    mobileNav?.classList.add('hidden');
+    mobileToggle?.setAttribute('aria-expanded', 'false');
+  };
+
+  const openMobileNav = () => {
+    mobileNav?.classList.remove('hidden');
+    mobileToggle?.setAttribute('aria-expanded', 'true');
+  };
+
+  mobileToggle?.addEventListener('click', (e) => {
+    const isOpen = mobileNav && !mobileNav.classList.contains('hidden');
+    if (isOpen) closeMobileNav(); else openMobileNav();
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!mobileNav || !mobileToggle) return;
+    if (mobileNav.classList.contains('hidden')) return;
+    const target = e.target;
+    if (!(target instanceof Node)) return;
+    if (mobileNav.contains(target) || mobileToggle.contains(target)) return;
+    closeMobileNav();
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileNav();
+  });
+</script>

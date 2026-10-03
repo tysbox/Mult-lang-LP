@@ -1,0 +1,554 @@
+---
+import fs from 'fs';
+import path from 'path';
+
+const contentPath = path.join(process.cwd(), 'content/pages');
+const globalPath = path.join(process.cwd(), 'content/global');
+const homeFilePath = path.join(contentPath, 'home.json');
+const settingsFilePath = path.join(globalPath, 'settings.json');
+
+const pageData = JSON.parse(fs.readFileSync(homeFilePath, 'utf-8'));
+const globalSettings = JSON.parse(fs.readFileSync(settingsFilePath, 'utf-8'));
+
+// safe defaults
+if (!pageData.hero) pageData.hero = { title: '', subtitle: '', ctaText: '', bgImage: '', alt: '' };
+if (!pageData.founder) pageData.founder = { id: 'founder', preheading: '', title: '', description: '', image: '', imageAlt: '', isSplit: false };
+if (!pageData.journeys) pageData.journeys = { id: 'journeys', preheading: '', title: '', description: '' };
+if (!pageData.intro) pageData.intro = { id: 'intro', preheading: '', title: '', description: '' };
+if (!Array.isArray(pageData.galleries)) pageData.galleries = [];
+if (!pageData.faq) pageData.faq = { title: '', description: '', items: [] };
+if (!Array.isArray(pageData.faq.items)) pageData.faq.items = [];
+if (!pageData.contact) pageData.contact = { title: '', description: '' };
+
+if (!globalSettings.header) globalSettings.header = { logo: '', menuItems: [] };
+if (!Array.isArray(globalSettings.header.menuItems)) globalSettings.header.menuItems = [];
+if (!globalSettings.footer) globalSettings.footer = { copyright: '', description: '', socialLinks: [], footerLinks: [] };
+if (!Array.isArray(globalSettings.footer.socialLinks)) globalSettings.footer.socialLinks = [];
+if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.footerLinks = [];
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bisen LP - CMS Editor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f6f8; color: #111827; }
+    .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+    .sidebar { background: #111827; color: #e5e7eb; padding: 24px; }
+    .sidebar h1 { font-size: 20px; margin-bottom: 16px; }
+    .nav-title { font-size: 11px; color: #9ca3af; margin: 16px 0 8px; letter-spacing: 0.5px; }
+    .nav-item { padding: 10px 12px; border-radius: 8px; margin-bottom: 6px; cursor: pointer; transition: background .15s; }
+    .nav-item:hover { background: #1f2937; }
+    .nav-item.active { background: #374151; color: #fff; }
+
+    .main { position: relative; padding: 24px 32px 80px; max-width: 1200px; }
+    .topbar { position: sticky; top: 0; z-index: 10; background: #f5f6f8; padding: 12px 0 16px; display: flex; gap: 12px; align-items: center; }
+    .topbar button { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .btn-save { background: #2563eb; color: #fff; }
+    .btn-secondary { background: #e5e7eb; color: #111827; }
+
+    .message { position: sticky; top: 64px; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; display: none; }
+    .message.success { background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; }
+    .message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecdd3; }
+
+    .section { display: none; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    .section.active { display: block; }
+    .section h2 { font-size: 18px; margin-bottom: 16px; }
+
+    .form-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); align-items: start; }
+    .form-grid.full-width { grid-template-columns: 1fr; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label { font-weight: 600; font-size: 13px; color: #374151; }
+    .form-group input, .form-group textarea { border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 12px; font-size: 14px; width: 100%; }
+    .form-group textarea { min-height: 96px; }
+    .preview-box { background:#e5e7eb; border:1px solid #d1d5db; border-radius:8px; overflow:hidden; min-height:140px; display:flex; align-items:center; justify-content:center; }
+    .preview-img { max-width:100%; max-height:220px; display:block; }
+    .preview-placeholder { color:#6b7280; font-size:12px; }
+    .item-card { background: #f9fafb; border: 1px solid #d1d5db; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    .gallery-item-box { background: #fff; border: 1px solid #d1d5db; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .gallery-wrapper h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: #111827; }
+    .inline-actions { display: flex; gap: 8px; }
+    .small-btn { border: none; border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 13px; }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-ghost { background: #e5e7eb; color: #111827; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h1>🦙 CMS</h1>
+      <div class="nav-title">PAGE SETTINGS</div>
+      <div class="nav-item active" data-section="hero">🎨 Hero</div>
+      <div class="nav-item" data-section="founder">👤 Founder</div>
+      <div class="nav-item" data-section="journeys">🧳 Journeys</div>
+      <div class="nav-item" data-section="intro">✨ Intro</div>
+      <div class="nav-item" data-section="galleries">🖼️ Galleries</div>
+      <div class="nav-item" data-section="faq">❓ FAQ</div>
+      <div class="nav-item" data-section="contact">📧 Contact</div>
+      <div class="nav-title">GLOBAL SETTINGS</div>
+      <div class="nav-item" data-section="header">🔝 Header</div>
+      <div class="nav-item" data-section="footer">🔚 Footer</div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <button class="btn-save" onclick="savePage()">💾 Save Page</button>
+        <button class="btn-save" style="background:#10b981" onclick="saveGlobal()">🌐 Save Global</button>
+        <button class="btn-secondary" onclick="previewPage()">👁️ Preview</button>
+      </div>
+      <div id="message" class="message"></div>
+
+      <section id="hero" class="section active">
+        <h2>🎨 Hero</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Title</label><input id="heroTitle" type="text"></div>
+          <div class="form-group"><label>Subtitle</label><textarea id="heroSubtitle"></textarea></div>
+          <div class="form-group"><label>CTA Text</label><input id="heroCtaText" type="text"></div>
+          <div class="form-group"><label>Background Image URL</label><input id="heroBgImage" type="url"></div>
+          <div class="form-group">
+            <label>Preview</label>
+            <div class="preview-box">
+              <img id="heroImagePreview" class="preview-img" src="" alt="hero preview" style="display:none;" />
+              <span id="heroImagePlaceholder" class="preview-placeholder">No image</span>
+            </div>
+          </div>
+          <div class="form-group"><label>Alt Text</label><input id="heroAlt" type="text"></div>
+        </div>
+      </section>
+
+      <section id="founder" class="section">
+        <h2>👤 Founder</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Preheading</label><input id="founderPreheading" type="text"></div>
+          <div class="form-group"><label>Title</label><input id="founderTitle" type="text"></div>
+          <div class="form-group"><label>Description</label><textarea id="founderDescription"></textarea></div>
+          <div class="form-group"><label>Image URL</label><input id="founderImage" type="url"></div>
+          <div class="form-group">
+            <label>Preview</label>
+            <div class="preview-box">
+              <img id="founderImagePreview" class="preview-img" src="" alt="founder preview" style="display:none;" />
+              <span id="founderImagePlaceholder" class="preview-placeholder">No image</span>
+            </div>
+          </div>
+          <div class="form-group"><label>Image Alt</label><input id="founderImageAlt" type="text"></div>
+          <div class="form-group"><label><input id="founderIsSplit" type="checkbox"> 2-column layout</label></div>
+        </div>
+      </section>
+
+      <section id="journeys" class="section">
+        <h2>🧳 Journeys</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Preheading</label><input id="journeysPreheading" type="text"></div>
+          <div class="form-group"><label>Title</label><input id="journeysTitle" type="text"></div>
+          <div class="form-group" style="grid-column:1 / -1"><label>Description</label><textarea id="journeysDescription"></textarea></div>
+        </div>
+      </section>
+
+      <section id="intro" class="section">
+        <h2>✨ Intro</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Preheading</label><input id="introPreheading" type="text"></div>
+          <div class="form-group"><label>Title</label><input id="introTitle" type="text"></div>
+          <div class="form-group" style="grid-column:1 / -1"><label>Description</label><textarea id="introDescription"></textarea></div>
+        </div>
+      </section>
+
+      <section id="galleries" class="section">
+        <h2>🖼️ Galleries</h2>
+        <div class="inline-actions" style="margin-bottom:12px;">
+          <button class="small-btn btn-ghost" onclick="addGallery()" type="button">➕ Add Gallery</button>
+        </div>
+        <div id="galleriesList"></div>
+      </section>
+
+      <section id="faq" class="section">
+        <h2>❓ FAQ</h2>
+        <div class="form-grid full-width">
+          <div class="form-group"><label>Title</label><input id="faqTitle" type="text"></div>
+          <div class="form-group"><label>Description</label><textarea id="faqDescription"></textarea></div>
+        </div>
+        <div class="inline-actions" style="margin:12px 0;">
+          <button class="small-btn btn-ghost" onclick="addFaqItem()" type="button">➕ Add FAQ</button>
+        </div>
+        <div id="faqList"></div>
+      </section>
+
+      <section id="contact" class="section">
+        <h2>📧 Contact</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Title</label><input id="contactTitle" type="text"></div>
+          <div class="form-group" style="grid-column:1 / -1"><label>Description</label><textarea id="contactDescription"></textarea></div>
+        </div>
+      </section>
+
+      <section id="header" class="section">
+        <h2>🔝 Header</h2>
+        <div class="form-grid">
+          <div class="form-group"><label>Logo Image URL</label><input id="headerLogoImage" type="url" placeholder="https://..."></div>
+          <div class="form-group"><label>Logo Text</label><input id="headerLogoText" type="text" placeholder="Japan Rediscover"></div>
+        </div>
+        <div class="inline-actions" style="margin:12px 0;">
+          <button class="small-btn btn-ghost" onclick="addHeaderMenu()" type="button">➕ Add Menu Item</button>
+        </div>
+        <div id="headerMenuList"></div>
+      </section>
+
+      <section id="footer" class="section">
+        <h2>🔚 Footer</h2>
+        <p style="color:#6b7280;font-size:13px;margin-bottom:12px;">※ Logo is shared with Header (edit in Header section)</p>
+        <div class="form-grid">
+          <div class="form-group"><label>Copyright</label><input id="footerCopyright" type="text"></div>
+          <div class="form-group"><label>Description</label><textarea id="footerDescription"></textarea></div>
+        </div>
+        <h3 style="margin:12px 0 6px;">Social Links</h3>
+        <div class="inline-actions" style="margin-bottom:12px;">
+          <button class="small-btn btn-ghost" onclick="addFooterSocial()" type="button">➕ Add Social Link</button>
+        </div>
+        <div id="footerSocialList"></div>
+        <h3 style="margin:16px 0 6px;">Footer Links</h3>
+        <div class="inline-actions" style="margin-bottom:12px;">
+          <button class="small-btn btn-ghost" onclick="addFooterLink()" type="button">➕ Add Link</button>
+        </div>
+        <div id="footerLinksList"></div>
+      </section>
+    </main>
+  </div>
+
+  <script define:vars={{ pageDataJson: JSON.stringify(pageData), globalSettingsJson: JSON.stringify(globalSettings) }}>
+    window.pageData = JSON.parse(pageDataJson);
+    window.globalSettings = JSON.parse(globalSettingsJson);
+    
+    const pageData = window.pageData;
+    const globalSettings = window.globalSettings;
+    
+    console.log('FAQ Items loaded:', pageData.faq.items.length);
+
+    function qs(id) { return document.getElementById(id); }
+
+    function showMessage(text, type='success') {
+      const el = qs('message');
+      el.textContent = text;
+      el.className = 'message ' + type;
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; }, 2500);
+    }
+
+    function updateImagePreview(inputId, imgId, placeholderId) {
+      const url = qs(inputId).value;
+      const img = qs(imgId);
+      const ph = qs(placeholderId);
+      if (url) {
+        img.src = url.startsWith('/') ? url : '../' + url;
+        img.style.display = 'block';
+        if (ph) ph.style.display = 'none';
+      } else {
+        img.src = '';
+        img.style.display = 'none';
+        if (ph) ph.style.display = 'block';
+      }
+    }
+
+    function switchSection(id) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.section === id));
+      document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === id));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderGalleries() {
+      const container = qs('galleriesList');
+      const html = window.pageData.galleries.map((g, gi) => `
+        <div class="item-card">
+          <div class="form-grid full-width">
+            <div class="form-group"><label>Gallery Title</label><input type="text" value="${g.title || ''}" onchange="window.pageData.galleries[${gi}].title=this.value"></div>
+            <div class="form-group"><label>Gallery Description</label><textarea onchange="window.pageData.galleries[${gi}].description=this.value">${g.description || ''}</textarea></div>
+          </div>
+          <div class="inline-actions" style="margin:12px 0 16px;">
+            <button class="small-btn btn-ghost" onclick="addGalleryItem(${gi})" type="button">➕ Add Item</button>
+            <button class="small-btn btn-danger" onclick="deleteGallery(${gi})" type="button">🗑️ Delete Gallery</button>
+          </div>
+          <div style="border-top: 1px solid #e5e7eb; padding-top: 16px;">
+            <h3 style="font-size:13px;font-weight:600;margin-bottom:12px;color:#6b7280;">Items</h3>
+            ${(g.items||[]).map((item, ii) => `
+              <div class="gallery-item-box">
+                <div class="form-grid full-width">
+                  <div class="form-group"><label>Item Title</label><input type="text" value="${item.title || ''}" oninput="window.pageData.galleries[${gi}].items[${ii}].title=this.value"></div>
+                  <div class="form-group"><label>Image URL</label><input type="url" value="${item.image || ''}" oninput="window.pageData.galleries[${gi}].items[${ii}].image=this.value; renderGalleries();"></div>
+                  <div class="form-group">
+                    <label>Preview</label>
+                    <div class="preview-box">
+                      ${item.image ? `<img src="${item.image.startsWith('/') ? item.image : '../' + item.image}" alt="${item.alt || 'preview'}" class="preview-img" />` : `<span class=\"preview-placeholder\">No image</span>`}
+                    </div>
+                  </div>
+                  <div class="form-group"><label>Alt Text</label><input type="text" value="${item.alt || ''}" oninput="window.pageData.galleries[${gi}].items[${ii}].alt=this.value"></div>
+                </div>
+                <div class="inline-actions" style="margin-top:10px;">
+                  <button class="small-btn btn-danger" onclick="deleteGalleryItem(${gi},${ii})" type="button">🗑️ Delete Item</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+      container.innerHTML = html;
+    }
+
+    function addGallery() {
+      window.pageData.galleries.push({ id: 'gallery-'+Date.now(), title: '', description: '', items: [] });
+      renderGalleries();
+    }
+    function deleteGallery(idx) { window.pageData.galleries.splice(idx,1); renderGalleries(); }
+    function addGalleryItem(gidx) {
+      if (!window.pageData.galleries[gidx].items) window.pageData.galleries[gidx].items = [];
+      window.pageData.galleries[gidx].items.push({ id: 'item-'+Date.now(), title: '', image: '', alt: '' });
+      renderGalleries();
+    }
+    function deleteGalleryItem(gidx,iidx) { window.pageData.galleries[gidx].items.splice(iidx,1); renderGalleries(); }
+
+    function renderFaq() {
+      const container = qs('faqList');
+      const html = window.pageData.faq.items.map((item, idx) => {
+        const escapedQuestion = (item.question || '').replace(/"/g, '&quot;');
+        const escapedAnswer = (item.answer || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `
+        <div class="item-card">
+          <div class="form-grid full-width">
+            <div class="form-group"><label>Question</label><input type="text" value="${escapedQuestion}" oninput="window.pageData.faq.items[${idx}].question=this.value"></div>
+            <div class="form-group"><label>Answer</label><textarea style="min-height:140px;" oninput="window.pageData.faq.items[${idx}].answer=this.value">${escapedAnswer}</textarea></div>
+          </div>
+          <div class="inline-actions" style="margin-top:10px;">
+            <button class="small-btn btn-danger" onclick="deleteFaqItem(${idx})" type="button">🗑️ Delete</button>
+          </div>
+        </div>
+      `;
+      }).join('');
+      container.innerHTML = html;
+    }
+    function addFaqItem() { window.pageData.faq.items.push({ question: '', answer: '' }); renderFaq(); }
+    function deleteFaqItem(idx) { window.pageData.faq.items.splice(idx,1); renderFaq(); }
+
+    function renderHeaderMenu() {
+      const container = qs('headerMenuList');
+      const html = (window.globalSettings.header.menuItems||[]).map((m, idx) => `
+        <div class="item-card">
+          <div class="form-grid">
+            <div class="form-group"><label>Label</label><input type="text" value="${m.label || ''}" onchange="window.globalSettings.header.menuItems[${idx}].label=this.value"></div>
+            <div class="form-group"><label>Href</label><input type="text" value="${m.href || ''}" onchange="window.globalSettings.header.menuItems[${idx}].href=this.value"></div>
+          </div>
+          <div class="inline-actions" style="margin-top:6px;">
+            <button class="small-btn btn-danger" onclick="deleteHeaderMenu(${idx})" type="button">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+      container.innerHTML = html;
+    }
+    function addHeaderMenu() { window.globalSettings.header.menuItems.push({ label: '', href: '' }); renderHeaderMenu(); }
+    function deleteHeaderMenu(idx) { window.globalSettings.header.menuItems.splice(idx,1); renderHeaderMenu(); }
+
+    function renderFooterSocial() {
+      const container = qs('footerSocialList');
+      const html = (window.globalSettings.footer.socialLinks||[]).map((s, idx) => `
+        <div class="item-card">
+          <div class="form-grid">
+            <div class="form-group"><label>Icon</label><input type="text" value="${s.icon || ''}" onchange="window.globalSettings.footer.socialLinks[${idx}].icon=this.value"></div>
+            <div class="form-group"><label>Label</label><input type="text" value="${s.label || ''}" onchange="window.globalSettings.footer.socialLinks[${idx}].label=this.value"></div>
+            <div class="form-group"><label>Href</label><input type="text" value="${s.href || ''}" onchange="window.globalSettings.footer.socialLinks[${idx}].href=this.value"></div>
+          </div>
+          <div class="inline-actions" style="margin-top:6px;">
+            <button class="small-btn btn-danger" onclick="deleteFooterSocial(${idx})" type="button">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+      container.innerHTML = html;
+    }
+    function addFooterSocial() { window.globalSettings.footer.socialLinks.push({ icon: '', label: '', href: '' }); renderFooterSocial(); }
+    function deleteFooterSocial(idx) { window.globalSettings.footer.socialLinks.splice(idx,1); renderFooterSocial(); }
+
+    function renderFooterLinks() {
+      const container = qs('footerLinksList');
+      const html = (window.globalSettings.footer.footerLinks||[]).map((l, idx) => `
+        <div class="item-card">
+          <div class="form-grid">
+            <div class="form-group"><label>Label</label><input type="text" value="${l.label || ''}" onchange="window.globalSettings.footer.footerLinks[${idx}].label=this.value"></div>
+            <div class="form-group"><label>Href</label><input type="text" value="${l.href || ''}" onchange="window.globalSettings.footer.footerLinks[${idx}].href=this.value"></div>
+          </div>
+          <div class="inline-actions" style="margin-top:6px;">
+            <button class="small-btn btn-danger" onclick="deleteFooterLink(${idx})" type="button">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+      container.innerHTML = html;
+    }
+    function addFooterLink() { window.globalSettings.footer.footerLinks.push({ label: '', href: '' }); renderFooterLinks(); }
+    function deleteFooterLink(idx) { window.globalSettings.footer.footerLinks.splice(idx,1); renderFooterLinks(); }
+
+    function initForm() {
+      qs('heroTitle').value = pageData.hero.title || '';
+      qs('heroSubtitle').value = pageData.hero.subtitle || '';
+      qs('heroCtaText').value = pageData.hero.ctaText || '';
+      qs('heroBgImage').value = pageData.hero.bgImage || '';
+      qs('heroAlt').value = pageData.hero.alt || '';
+
+      qs('founderPreheading').value = pageData.founder.preheading || '';
+      qs('founderTitle').value = pageData.founder.title || '';
+      qs('founderDescription').value = pageData.founder.description || '';
+      qs('founderImage').value = pageData.founder.image || '';
+      qs('founderImageAlt').value = pageData.founder.imageAlt || '';
+      qs('founderIsSplit').checked = pageData.founder.isSplit || false;
+
+      updateImagePreview('founderImage','founderImagePreview','founderImagePlaceholder');
+
+      qs('journeysPreheading').value = pageData.journeys.preheading || '';
+      qs('journeysTitle').value = pageData.journeys.title || '';
+      qs('journeysDescription').value = pageData.journeys.description || '';
+
+      qs('introPreheading').value = pageData.intro.preheading || '';
+      qs('introTitle').value = pageData.intro.title || '';
+      qs('introDescription').value = pageData.intro.description || '';
+
+      qs('faqTitle').value = pageData.faq.title || '';
+      qs('faqDescription').value = pageData.faq.description || '';
+      renderFaq();
+
+      qs('contactTitle').value = pageData.contact.title || '';
+      qs('contactDescription').value = pageData.contact.description || '';
+
+      renderGalleries();
+
+      // Handle both old string format and new object format for logo
+      if (typeof window.globalSettings.header.logo === 'string') {
+        window.globalSettings.header.logo = { image: '', text: window.globalSettings.header.logo };
+      }
+      if (!window.globalSettings.header.logo) {
+        window.globalSettings.header.logo = { image: '', text: '' };
+      }
+      qs('headerLogoImage').value = window.globalSettings.header.logo.image || '';
+      qs('headerLogoText').value = window.globalSettings.header.logo.text || '';
+      renderHeaderMenu();
+      qs('footerCopyright').value = window.globalSettings.footer.copyright || '';
+      qs('footerDescription').value = window.globalSettings.footer.description || '';
+      renderFooterSocial();
+      renderFooterLinks();
+
+      updateImagePreview('heroBgImage','heroImagePreview','heroImagePlaceholder');
+      qs('heroBgImage').addEventListener('input', () => updateImagePreview('heroBgImage','heroImagePreview','heroImagePlaceholder'));
+      qs('founderImage').addEventListener('input', () => updateImagePreview('founderImage','founderImagePreview','founderImagePlaceholder'));
+    }
+
+    function collectPageData() {
+      window.pageData.hero = {
+        title: qs('heroTitle').value,
+        subtitle: qs('heroSubtitle').value,
+        ctaText: qs('heroCtaText').value,
+        bgImage: qs('heroBgImage').value,
+        alt: qs('heroAlt').value
+      };
+      window.pageData.founder = {
+        id: 'founder',
+        preheading: qs('founderPreheading').value,
+        title: qs('founderTitle').value,
+        description: qs('founderDescription').value,
+        image: qs('founderImage').value,
+        imageAlt: qs('founderImageAlt').value,
+        isSplit: qs('founderIsSplit').checked
+      };
+      window.pageData.journeys = {
+        id: 'journeys',
+        preheading: qs('journeysPreheading').value,
+        title: qs('journeysTitle').value,
+        description: qs('journeysDescription').value
+      };
+      window.pageData.intro = {
+        id: 'intro',
+        preheading: qs('introPreheading').value,
+        title: qs('introTitle').value,
+        description: qs('introDescription').value
+      };
+      window.pageData.faq.title = qs('faqTitle').value;
+      window.pageData.faq.description = qs('faqDescription').value;
+      window.pageData.contact = { title: qs('contactTitle').value, description: qs('contactDescription').value };
+    }
+
+    async function savePage() {
+      collectPageData();
+      try {
+        const res = await fetch('/api/save-file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: 'home.json', content: JSON.stringify(window.pageData, null, 2) })
+        });
+        if (!res.ok) throw new Error('Save failed');
+        showMessage('Page saved', 'success');
+      } catch (err) {
+        console.error(err);
+        showMessage('Save failed: ' + err.message, 'error');
+      }
+    }
+
+    async function saveGlobal() {
+      try {
+        // Update logo data
+        window.globalSettings.header.logo = {
+          image: qs('headerLogoImage').value,
+          text: qs('headerLogoText').value
+        };
+        
+        // Update footer data
+        window.globalSettings.footer.copyright = qs('footerCopyright').value;
+        window.globalSettings.footer.description = qs('footerDescription').value;
+        
+        // Note: Header menuItems, Footer socialLinks, and footerLinks are already updated
+        // in window.globalSettings via onchange events in their render functions
+        
+        console.log('Saving globalSettings with', window.globalSettings.header.menuItems.length, 'menu items');
+        
+        const res = await fetch('/api/save-file', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: '../global/settings.json', content: JSON.stringify(window.globalSettings, null, 2) })
+        });
+        if (!res.ok) throw new Error('Global save failed');
+        showMessage('Global settings saved', 'success');
+      } catch (err) {
+        console.error(err);
+        showMessage('Global save failed: ' + err.message, 'error');
+      }
+    }
+
+    let previewWindow = null;
+    function previewPage() {
+      if (!previewWindow || previewWindow.closed) {
+        previewWindow = window.open('/', 'preview-window');
+      } else {
+        previewWindow.location.href = '/';
+        previewWindow.focus();
+      }
+    }
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => switchSection(item.dataset.section));
+    });
+
+    // expose for inline handlers
+    window.savePage = savePage;
+    window.saveGlobal = saveGlobal;
+    window.previewPage = previewPage;
+    window.addGallery = addGallery;
+    window.deleteGallery = deleteGallery;
+    window.addGalleryItem = addGalleryItem;
+    window.deleteGalleryItem = deleteGalleryItem;
+    window.addFaqItem = addFaqItem;
+    window.deleteFaqItem = deleteFaqItem;
+    window.addHeaderMenu = addHeaderMenu;
+    window.deleteHeaderMenu = deleteHeaderMenu;
+    window.addFooterSocial = addFooterSocial;
+    window.deleteFooterSocial = deleteFooterSocial;
+    window.addFooterLink = addFooterLink;
+    window.deleteFooterLink = deleteFooterLink;
+
+    initForm();
+  </script>
+</body>
+</html>

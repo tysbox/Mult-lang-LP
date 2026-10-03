@@ -1,0 +1,105 @@
+{
+  "siteName": "Japan Rediscover",
+  "header": {
+    "logo": {
+      "image": "/images/Logo/logo.jpg",
+      "text": "Since 2025 Hidden Treasure in KYOTO"
+    },
+    "menuItems": [
+      {
+        "label": "My Blog",
+        "href": "https://hidden-treasure.bisen-kyoto.com"
+      },
+      {
+        "label": "Silence",
+        "href": "#Silence"
+      },
+      {
+        "label": "Flow",
+        "href": "#Flow"
+      },
+      {
+        "label": "Essence",
+        "href": "#Essence"
+      },
+      {
+        "label": "FAQ",
+        "href": "#faq"
+      }
+    ]
+  },
+  "footer": {
+    "copyright": "© 2025. All rights reserved.",
+    "description": "A modern reinterpretation of traditional Japanese aesthetics.",
+    "socialLinks": [
+      {
+        "icon": "public",
+        "href": "#",
+        "label": "Website"
+      },
+      {
+        "icon": "share",
+        "href": "#",
+        "label": "Share"
+      },
+      {
+        "icon": "mail",
+        "href": "#contact",
+        "label": "Email"
+      }
+    ],
+    "footerLinks": [
+      {
+        "label": "My Blog",
+        "href": "https://hidden-treasure.bisen-kyoto.com"
+      },
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      },
+      {
+        "label": "Privacy",
+        "href": "#privacy"
+      }
+    ]
+  },
+  "navigation": [
+    {
+      "label": "Silence",
+      "href": "#Silence"
+    },
+    {
+      "label": "Flow",
+      "href": "#Flow"
+    },
+    {
+      "label": "Essence",
+      "href": "#Essence"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    }
+  ],
+  "socialLinks": [
+    {
+      "icon": "public",
+      "href": "#",
+      "label": "Website"
+    },
+    {
+      "icon": "share",
+      "href": "#",
+      "label": "Share"
+    },
+    {
+      "icon": "mail",
+      "href": "#contact",
+      "label": "Email"
+    }
+  ]
+}

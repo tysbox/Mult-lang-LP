@@ -1,0 +1,22 @@
+---
+interface Props {
+  question: string;
+  answer: string;
+}
+
+const { question, answer } = Astro.props;
+
+// Reverted to simple text interpolation (no html conversion)
+---
+
+<details class="group">
+  <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-lg font-medium text-text-light dark:text-text-dark border-b border-highlight/50 hover:bg-black/5 dark:hover:bg-white/5 transition-colors px-2 rounded-sm">
+    {question}
+    <span class="material-symbols-outlined icon text-subtle-light dark:text-subtle-dark transition-transform duration-300 group-open:rotate-45">
+      add
+    </span>
+  </summary>
+  <div class="py-4 px-2 text-subtle-light dark:text-subtle-dark animate-[fadeIn_0.3s_ease-in-out]">
+    <div>{answer}</div>
+  </div>
+</details>

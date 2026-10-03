@@ -1,0 +1,13 @@
+{
+  "build": {
+    "command": "npm run build",
+    "output_directory": "dist",
+    "env": {
+      "NODE_ENV": "production",
+      "ASTRO_FRAMEWORK": "astro"
+    }
+  },
+  "functions": {
+    "directory": "functions/api"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "siteName": "Japan Rediscover",
+  "header": {
+    "logo": {
+      "image": "/images/Logo/logo.jpg",
+      "text": "2025 KYOTO"
+    },
+    "menuItems": [
+      {
+        "label": "Silence",
+        "href": "#tradition"
+      },
+      {
+        "label": "Flow",
+        "href": "#craftsmanship"
+      },
+      {
+        "label": "Essence",
+        "href": "#aesthetics"
+      },
+      {
+        "label": "FAQ",
+        "href": "#faq"
+      }
+    ]
+  },
+  "footer": {
+    "copyright": "© 2025. All rights reserved.",
+    "description": "A modern reinterpretation of traditional Japanese aesthetics.",
+    "socialLinks": [
+      {
+        "icon": "public",
+        "href": "#",
+        "label": "Website"
+      },
+      {
+        "icon": "share",
+        "href": "#",
+        "label": "Share"
+      },
+      {
+        "icon": "mail",
+        "href": "#contact",
+        "label": "Email"
+      }
+    ],
+    "footerLinks": [
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      },
+      {
+        "label": "Privacy",
+        "href": "#privacy"
+      }
+    ]
+  },
+  "navigation": [
+    {
+      "label": "Tradition",
+      "href": "#tradition"
+    },
+    {
+      "label": "Craftsmanship",
+      "href": "#craftsmanship"
+    },
+    {
+      "label": "Aesthetics",
+      "href": "#aesthetics"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    }
+  ],
+  "socialLinks": [
+    {
+      "icon": "public",
+      "href": "#",
+      "label": "Website"
+    },
+    {
+      "icon": "share",
+      "href": "#",
+      "label": "Share"
+    },
+    {
+      "icon": "mail",
+      "href": "#contact",
+      "label": "Email"
+    }
+  ]
+}

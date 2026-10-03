@@ -1,0 +1,86 @@
+---
+import { defaultLocale, getUIStrings, type Locale } from '../i18n';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** ページの言語（html lang 属性に使用） */
+  lang?: Locale;
+}
+
+const ui = getUIStrings(defaultLocale);
+
+const {
+  title = ui.meta.title,
+  description = ui.meta.description,
+  lang = defaultLocale,
+} = Astro.props;
+
+// Cloudflare beacon token (set in environment as PUBLIC_CLOUDFLARE_BEACON_TOKEN)
+const cfToken = import.meta.env.PUBLIC_CLOUDFLARE_BEACON_TOKEN;
+---
+
+<!DOCTYPE html>
+<html lang={lang} class="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <title>{title}</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Noto+Sans+JP:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+    rel="stylesheet"
+  />
+
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-light dark:text-text-dark selection:bg-primary/20">
+  <div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+    <slot />
+  </div>
+
+  <style is:global>
+    :root {
+      --scroll-offset: 0px;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    .slider-container::-webkit-scrollbar {
+      height: 4px;
+    }
+    
+    .slider-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    .slider-container::-webkit-scrollbar-thumb {
+      background: #d4af37;
+      border-radius: 2px;
+    }
+
+    details > summary::-webkit-details-marker {
+      display: none;
+    }
+  </style>
+
+  <script>
+    const handleScroll = () => {
+      document.documentElement.style.setProperty('--scroll-offset', `${window.scrollY}px`);
+    };
+    window.addEventListener('scroll', handleScroll);
+  </script>
+
+  {cfToken && (
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={`{"token":"${cfToken}"}`}></script>
+  )}
+</body>
+</html>

@@ -1,0 +1,156 @@
+{
+  "title": "Japan Rediscover",
+  "nav": [
+    {
+      "label": "Tradition",
+      "href": "#tradition"
+    },
+    {
+      "label": "Craftsmanship",
+      "href": "#craftsmanship"
+    },
+    {
+      "label": "Aesthetics",
+      "href": "#aesthetics"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    }
+  ],
+  "hero": {
+    "title": "The Beauty Soaks In",
+    "subtitle": "Some beauty never announces itself — it unfolds slowly, unmistakably.\nThis is an invitation to appreciate Japan in that way \n— something that quietly enters your life.",
+    "ctaText": "Join the Dialogue",
+    "bgImage": "images/hero/The Way.png",
+    "alt": "Serene Japanese temple garden with morning mist"
+  },
+  "founder": {
+    "id": "founder",
+    "preheading": "Our Visionary",
+    "title": "Meet Your Exploring Companion",
+    "description": "I am not a guide who knows all, but an exploring companion who walks beside you — discovering together the quiet layers of Japan’s beauty. I was born and raised in Kyoto, in a family that has long been engaged in kimono craftsmanship.\nHaving spent eight years in London and Paris as a representative of a Japanese retailer, bringing European resources to Japan, and a subsequent twenty-five years in the luxury business, I have experienced both the meticulous craftsmanship of Western luxury and the subtle, unbranded elegance of Japan. Now, in this new chapter of life, I wish to share and explore this beauty with you — gently, without pretense. We seek to capture the essence of Japan: the mindful craftsmanship, the beauty in simplicity, and the deep connection to nature.This is not just about aesthetics — it is a quiet way of being.",
+    "image": "images/founder/Bamboo Silence.jpeg",
+    "imageAlt": "Explore my thoughts further in the blog.",
+    "isSplit": true
+  },
+  "journeys": {
+    "id": "journeys",
+    "preheading": "A gentle guide to experiences",
+    "title": "The Concept of Journey Plans",
+    "description": "The experiences we present here are currently in development, shaped by our ongoing exploration of Japan’s quiet beauty. (based in Kyoto for the time being)\nThis is not a conventional tour — adjustments are welcome, provided they preserve the depth and authenticity of what we explore together.\n*Please be advised that images are provided as anonymous, AI-generated impressions, inviting you to imagine the essence of each journey."
+  },
+  "intro": {
+    "id": "intro",
+    "preheading": "An Immersive Journey",
+    "title": "Three Quiet Dimensions of Japan",
+    "description": "Japan can be visited through sights and activities,\nbut its deeper nature comes forward through three quiet dimensions —\nlenses that bring the invisible into clarity.\n\n  Silence, the art of space.\n  Flow, the life of impermanence.\n  Essence, the spirit within materials.\n\nTogether, they open traces the eye alone cannot follow."
+  },
+  "galleries": [
+    {
+      "id": "Silence",
+      "title": "Silence",
+      "description": "A quiet space where awareness deepens and meaning quietly appears.",
+      "items": [
+        {
+          "id": "",
+          "title": "華道 IKEBANA - Japanese Flower Arrengement",
+          "image": "images/gallery/Silence/Flower Arrangement.jpeg",
+          "alt": "IKEBANA - Japanese Flower Arrengement"
+        },
+        {
+          "id": "",
+          "title": "枯山水 KARESASUI - Dry Landscape Garden",
+          "image": "images/gallery/Silence/Karesannsui.png",
+          "alt": "枯山水 KARESASUI - Dry Landscape Garden"
+        },
+        {
+          "id": "",
+          "title": "香道 KōDō - Japanese Way of Incense",
+          "image": "images/gallery/Silence/Smoke from Koro.png",
+          "alt": "香道 KōDō - Japanese Way of Incense"
+        }
+      ]
+    },
+    {
+      "id": "Flow",
+      "title": "Flow",
+      "description": "All things shift, age, and breathe—each cycle deepening craft and feeling.",
+      "items": [
+        {
+          "id": "",
+          "title": "懐石  KAISEKI - Seasonal Japanese Haute-Cuisine  ",
+          "image": "images/gallery/Flow/Autumn Kaiseki.jpeg",
+          "alt": "懐石  KAISEKI - Seasonal Japanese Haute-Cuisine  "
+        },
+        {
+          "id": "",
+          "title": "桜 SAKURA - Cherry Blossoms",
+          "image": "images/gallery/Flow/Sakura Season.png",
+          "alt": "桜 SAKURA - Cherry Blossoms"
+        },
+        {
+          "id": "",
+          "title": "和菓子 WAGASHI - Japanese Handcrafted Sweets",
+          "image": "images/gallery/Flow/Wagashi snow.png",
+          "alt": "和菓子 WAGASHI - Japanese Handcrafted Sweets"
+        }
+      ]
+    },
+    {
+      "id": "Essence",
+      "title": "Essence",
+      "description": "The distilled truth of a craft—nothing extra, nothing missing.",
+      "items": [
+        {
+          "id": "",
+          "title": "友禅 YūZEN - Hand-Dyed Textile Art",
+          "image": "images/gallery/Essence/yuzen.png",
+          "alt": "友禅 YūZEN - Hand-Dyed Textile Art"
+        },
+        {
+          "id": "",
+          "title": "陶芸 Japanese Ceramics - Vessels Shaped by Hand",
+          "image": "images/gallery/Essence/Ceramic.png",
+          "alt": "陶芸 Japanese Ceramics - Vessels Shaped by Hand"
+        },
+        {
+          "id": "",
+          "title": "金継ぎ KINTSUGI - Art of Mending Cracks with Gold",
+          "image": "images/gallery/Essence/Kintsugi.png",
+          "alt": "金継ぎ KINTSUGI - Art of Mending Cracks with Gold"
+        }
+      ]
+    }
+  ],
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "Before the questions — short preface\nWhile Japanese regulations mean I cannot act as a tour agent, this allows me to stay focused on what matters most —\nhelping you find experiences that are honest, meaningful,and shaped with sincerity rather than convenience.",
+    "items": [
+      {
+        "question": "Do you arrange accommodations or transportation?",
+        "answer": "I’m not able to book them directly, but I can offer thoughtful guidance —\nneighborhoods that suit your pace, timing considerations,\nand practical notes that help you choose comfortably on your own."
+      },
+      {
+        "question": "Are these experiences fixed itineraries?",
+        "answer": "No. They aren’t tours.\nEach experience is shaped around your curiosity,\nyour rhythm, and the kind of depth you wish to explore.\nNothing is rushed; nothing is packaged."
+      },
+      {
+        "question": "Can the content be customized?",
+        "answer": "Yes — within the character of each experience.\nMy role is to help you find the most authentic version of what you seek,\nnot to assemble quick arrangements.\nWe shape the direction together."
+      },
+      {
+        "question": "Are the images and activities final?",
+        "answer": "Not yet.\nThe concepts are evolving, and the visuals are AI-generated\nto protect artisans’ privacy until the real experiences take form.\nYour impressions and wishes will gently shape what comes next."
+      },
+      {
+        "question": "What if I need interpretation or specialized knowledge?",
+        "answer": "I can’t formally provide interpretation services,\nbut I can help you search for the right support\nand offer clear written briefings before and after each visit\nso you feel grounded and prepared."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Your Opinions Are Important",
+    "description": "Your reflections hold great value to us.\nThey help refine this project with authenticity and intention,\nand we continue to learn from the insights shared by our visitors.\nThank you for contributing to its evolution.\n\n※ You are welcome to share your thoughts anonymously.\nIf you wish to receive a reply, kindly include your preferred contact details."
+  }
+}

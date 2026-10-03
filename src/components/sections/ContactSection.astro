@@ -1,0 +1,294 @@
+---
+import { defaultLocale, getUIStrings, type Locale } from '../../i18n';
+
+interface Props {
+  title: string;
+  description: string;
+  /** 現在のロケール */
+  lang?: Locale;
+}
+
+const { title, description, lang = defaultLocale } = Astro.props;
+
+const ui = getUIStrings(lang);
+
+// クライアントサイドのスクリプトに渡す文言（JSON で埋め込み）
+const clientStrings = {
+  sending: ui.form.sending,
+  send: ui.form.send,
+  success: ui.form.success,
+  error: ui.form.error,
+  verificationUnavailable: ui.form.verificationUnavailable,
+  spamDetected: ui.form.spamDetected,
+  messageRequired: ui.form.messageRequired,
+  tooFast: ui.form.tooFast,
+  wrongAnswer: ui.form.wrongAnswer,
+  sendingInfo: ui.form.sendingInfo,
+};
+
+// Reverted to simple text interpolation (no html conversion)
+---
+
+<section id="contact" class="py-20">
+  <div class="text-center mb-12">
+    <h3 class="text-2xl md:text-3xl font-bold tracking-tight">{title}</h3>
+    <p class="text-subtle-light dark:text-subtle-dark max-w-xl mx-auto mt-2 whitespace-pre-line">{description}</p>
+  </div>
+  
+  <form 
+    id="contact-form"
+    class="mt-12 max-w-xl mx-auto space-y-6"
+    method="POST"
+    action="/api/contact"
+    autocomplete="off"
+    data-i18n={JSON.stringify(clientStrings)}
+  >
+    <div>
+      <label for="name" class="block text-sm font-medium text-subtle-light dark:text-subtle-dark">
+        {ui.form.name} <span class="text-xs text-muted">{ui.form.optional}</span>
+      </label>
+      <input 
+        type="text" 
+        id="name"
+        name="name"
+        autocomplete="off"
+        class="mt-1 block w-full rounded-md border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark/50 shadow-sm focus:border-highlight focus:ring-highlight py-2 px-3" 
+        placeholder={ui.form.optionalPlaceholder}
+      />
+    </div>
+    
+    <div>
+      <label for="email" class="block text-sm font-medium text-subtle-light dark:text-subtle-dark">
+        {ui.form.email} <span class="text-xs text-muted">{ui.form.optional}</span>
+      </label>
+      <input 
+        type="email" 
+        id="email"
+        name="email"
+        autocomplete="off"
+        class="mt-1 block w-full rounded-md border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark/50 shadow-sm focus:border-highlight focus:ring-highlight py-2 px-3" 
+        placeholder={ui.form.optionalPlaceholder}
+      />
+    </div>
+    
+    <div>
+      <label for="message" class="block text-sm font-medium text-subtle-light dark:text-subtle-dark">
+        {ui.form.message}
+      </label>
+      <textarea 
+        id="message"
+        name="message"
+        rows="4"
+        required
+        autocomplete="off"
+        class="mt-1 block w-full rounded-md border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark/50 shadow-sm focus:border-highlight focus:ring-highlight py-2 px-3"
+      ></textarea>
+    </div>
+
+    <!-- Honeypot (hidden field to trap bots) -->
+    <div style="position:absolute;left:-9999px;top:auto;overflow:hidden;">
+      <label style="display:block;">{ui.form.honeypot}
+        <input type="text" name="website" id="hp_website" autocomplete="off" tabindex="-1" />
+      </label>
+    </div>
+
+    <!-- Fallback challenge (hidden by default) -->
+    <div id="turnstile-fallback" class="hidden mt-4" data-expected="">
+      <label for="fallback-answer" class="block text-sm font-medium text-subtle-light dark:text-subtle-dark">
+        <span id="fallback-label">{ui.form.fallbackPrefix} <strong id="fallback-word">[Word]</strong>:</span> <span class="text-xs text-muted">{ui.form.fallbackSuffix}</span>
+      </label>
+      <input id="fallback-answer" name="fallback-answer" type="text" autocomplete="off" class="mt-1 block w-full rounded-md border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark/50 shadow-sm focus:border-highlight focus:ring-highlight py-2 px-3" placeholder={ui.form.fallbackPlaceholder} />
+      <input type="hidden" id="fallback-ts" name="fallback-ts" value="" />
+      <input type="hidden" name="subject" id="form-subject" value="" />
+    </div>
+
+    <!-- hCaptcha widget (Web3Forms helper will render this) -->
+    <div class="h-captcha mt-4" data-captcha="true"></div>
+
+    <!-- hCaptcha response (added by helper as textarea[name="h-captcha-response"]) -->
+    <!-- Keep honeypot named "botcheck" for spam checks -->
+
+    <div>
+      <button 
+        type="submit" 
+        id="contact-submit"
+        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-background-light dark:text-text-light bg-highlight hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-highlight transition-opacity"
+      >
+        {ui.form.send}
+      </button>
+    </div>
+  </form>
+
+  <div 
+    id="form-message" 
+    class="mt-4 text-center text-base hidden"
+  ></div>
+</section>
+
+<!-- hCaptcha helper script -->
+<script src="https://web3forms.com/helper/api.js" async defer></script>
+
+<script>
+  // @ts-nocheck
+  // Web3Forms access key (injected at build time)
+  const WEB3_ACCESS_KEY = import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY;
+
+  // サーバー側で埋め込んだ文言（data-i18n 属性）を読み込む
+  const formEl = document.getElementById('contact-form');
+  const T = (() => {
+    try {
+      return JSON.parse(formEl?.dataset?.i18n || '{}');
+    } catch (e) {
+      return {};
+    }
+  })();
+
+  // Helper to show messages
+  function showMessage(text, type = 'error') {
+    const m = document.getElementById('form-message');
+    if (!m) return;
+    m.textContent = text;
+    m.className = 'mt-4 text-center text-base whitespace-pre-line ' + (type === 'error' ? 'text-red-600 dark:text-red-400' : (type === 'info' ? 'text-gray-600 dark:text-gray-400' : 'text-green-600 dark:text-green-400'));
+    m.classList.remove('hidden');
+  }
+
+  function setLoading(loading) {
+    const btn = document.getElementById('contact-submit');
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.textContent = loading ? (T.sending || 'Sending...') : (T.send || 'Send Message');
+  }
+
+  // Generate a randomized city-name question and store expected first letter (lowercase) in data-attribute
+  function generateFallbackQuestion() {
+    const words = ['Japan', 'Tokyo', 'Kyoto', 'Osaka', 'Nara'];
+    const idx = Math.floor(Math.random() * words.length);
+    const word = words[idx];
+    const label = document.getElementById('fallback-label');
+    const wordEl = document.getElementById('fallback-word');
+    if (wordEl) wordEl.textContent = word;
+    if (label) {
+      // keep the short muted note in place (no sanitation needed for this controlled list)
+      // label content updated above via fallback-word element
+    }
+    if (fallbackDiv) {
+      fallbackDiv.dataset.expected = (word.charAt(0) || '').toLowerCase();
+    }
+  }
+
+  const form = document.getElementById('contact-form');
+  const fallbackDiv = document.getElementById('turnstile-fallback');
+  const fallbackAnswer = document.getElementById('fallback-answer');
+  const fallbackTs = document.getElementById('fallback-ts');
+
+  // Detect whether hCaptcha helper/script loaded (if blocked, show fallback)
+  let hcaptchaLoaded = false;
+  const hScript = document.querySelector('script[src*="web3forms.com/helper/api.js"]');
+  if (hScript) {
+    hScript.addEventListener('load', () => { hcaptchaLoaded = true; });
+  }
+  setTimeout(() => {
+    if (typeof window.hcaptcha !== 'undefined' || document.querySelector('[name="h-captcha-response"]')) hcaptchaLoaded = true;
+    if (!hcaptchaLoaded) {
+      if (fallbackDiv) {
+        // generate a fresh question each time the fallback appears
+        generateFallbackQuestion();
+        fallbackDiv.classList.remove('hidden');
+        if (fallbackTs) fallbackTs.value = String(Date.now());
+        // Do not autofocus on page load — this avoids jumping the viewport to the contact form.
+        // If verification is attempted by the user (submit), focus will still be applied there.
+        showMessage(T.verificationUnavailable || 'Verification is unavailable. Please complete the quick check below to send your message.', 'error');
+      }
+    }
+  }, 1200);
+
+  // Submit handler: fetch to Web3Forms
+  form?.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Honeypot check (botcheck hidden field)
+    const botcheck = (document.getElementById('botcheck') || {}).value || '';
+    if (botcheck && botcheck.trim() !== '') {
+      showMessage(T.spamDetected || 'Spam detected. Submission blocked.');
+      return;
+    }
+
+    // Validate input
+    const name = (document.getElementById('name') || {}).value || '';
+    const email = (document.getElementById('email') || {}).value || '';
+    const message = (document.getElementById('message') || {}).value || '';
+    if (!message) { showMessage(T.messageRequired || 'Message is required.'); return; }
+
+    // Read hCaptcha response if present
+    const hcaptchaRespEl = document.querySelector('[name="h-captcha-response"]');
+    const hcaptchaResp = (hcaptchaRespEl && (hcaptchaRespEl.value || hcaptchaRespEl.textContent)) || '';
+
+    // If hCaptcha response missing, require fallback
+    if (!hcaptchaResp) {
+      if (fallbackDiv && fallbackDiv.classList.contains('hidden')) {
+        // generate a new randomized question
+        generateFallbackQuestion();
+        fallbackDiv.classList.remove('hidden');
+        if (fallbackTs) fallbackTs.value = String(Date.now());
+        if (fallbackAnswer) fallbackAnswer.focus();
+        showMessage(T.verificationUnavailable || 'Verification is unavailable. Please complete the quick check below to send your message.', 'error');
+        return;
+      }
+
+      const ans = (fallbackAnswer || {}).value?.trim() || '';
+      const ts = parseInt((fallbackTs || {}).value || '0', 10) || 0;
+      if (Date.now() - ts < 3000) { showMessage(T.tooFast || 'Please take a moment before submitting.'); return; }
+      const ansChar = (ans && ans.charAt(0)) ? ans.charAt(0).toLowerCase() : '';
+      const expected = (fallbackDiv && fallbackDiv.dataset && fallbackDiv.dataset.expected) || '';
+      if (ansChar !== expected) { showMessage(T.wrongAnswer || 'Wrong answer. Please try again.'); return; }
+    }
+    // Prepare dynamic subject and set hidden input (New Inquiry from [name] (HH:mm:ss))
+    const subjectEl = document.getElementById('form-subject');
+    const who = name && name.trim() ? name.trim() : 'Anonymous';
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const timestr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const subjectValue = `New Inquiry from ${who} (${timestr})`;
+    if (subjectEl) subjectEl.value = subjectValue;
+
+    const payload = {
+      access_key: WEB3_ACCESS_KEY,
+      subject: subjectValue,
+      name,
+      email,
+      message,
+      botcheck: botcheck || '',
+    };
+    if (hcaptchaResp) payload['h-captcha-response'] = hcaptchaResp;
+    if (document.getElementById('fallback-used')) payload.fallback_used = '1';
+
+    try {
+      setLoading(true);
+      showMessage(T.sendingInfo || 'Sending...', 'info');
+
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data && data.success) {
+        showMessage(T.success || `Thank you for your message.
+Your submission has been sent successfully.
+Our native Japanese representative will carefully review your comments.
+If a reply is required, we will get back to you personally within approximately one week.
+Thank you for your patience.`, 'success');
+        form.reset();
+        // reset hCaptcha if available
+        try { if (window.hcaptcha && typeof window.hcaptcha.reset === 'function') window.hcaptcha.reset(); } catch (e) {}
+      } else {
+        showMessage((data && data.message) ? data.message : (T.error || 'Submission failed. Please try again.'));
+      }
+    } catch (err) {
+      console.error('Web3Forms submit error', err);
+      showMessage(T.error || 'Submission failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  });
+</script>
