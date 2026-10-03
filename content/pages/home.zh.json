@@ -1,0 +1,156 @@
+{
+  "title": "Japan Rediscover",
+  "nav": [
+    {
+      "label": "Silence",
+      "href": "#Silence"
+    },
+    {
+      "label": "Flow",
+      "href": "#Flow"
+    },
+    {
+      "label": "Essence",
+      "href": "#Essence"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    }
+  ],
+  "hero": {
+    "title": "The Beauty Soaks In",
+    "subtitle": "有些美从不自我张扬——它缓缓展开，却清晰可辨。\n这是一份以这种方式欣赏日本的邀请\n——某种悄然进入你生活的东西。",
+    "ctaText": "Join the Dialogue",
+    "bgImage": "images/hero/The Way.png",
+    "alt": "Serene Japanese temple garden with morning mist"
+  },
+  "founder": {
+    "id": "founder",
+    "preheading": "Our Visionary",
+    "title": "Meet Your Exploring Companion",
+    "description": "我不是一位无所不知的向导，而是与你并肩同行的探索伙伴——一起发现日本之美中那些静谧的层次。我出生于京都，成长于一个世代从事和服工艺的家庭。\n我曾作为日本零售企业的代表在伦敦和巴黎生活八年，将欧洲的资源带到日本，随后又在奢侈品行业工作了二十五年，既体验过西方奢侈品的精工细作，也体会过日本那种含蓄而不张扬的优雅。如今，在人生的新篇章里，我希望能与你分享并一同探索这份美——温和地，不带任何矫饰。我们试图捕捉日本的本质：用心的工艺、简约中的美，以及与自然的深厚联结。这不仅仅是审美——而是一种静谧的生活方式。",
+    "image": "images/founder/Bamboo Silence.jpeg",
+    "imageAlt": "Explore my thoughts further in the blog.",
+    "isSplit": true
+  },
+  "journeys": {
+    "id": "journeys",
+    "preheading": "A gentle guide to experiences",
+    "title": "The Concept of Journey Plans",
+    "description": "我们在此呈现的体验目前仍在筹备中，它们由我们对日本静谧之美的持续探索所塑造。（目前以京都为据点）\n这不是传统的旅游行程——只要不损害我们共同探索的深度与真实性，调整都是欢迎的。\n※请注意，图片为匿名、AI生成的意象，旨在邀请你想象每一段旅程的本质。"
+  },
+  "intro": {
+    "id": "intro",
+    "preheading": "An Immersive Journey",
+    "title": "Three Quiet Dimensions of Japan",
+    "description": "日本可以通过景点和活动来游览，\n但它更深层的本质，是通过三个静谧的维度显现的——\n那是让无形之物变得清晰的三面透镜。\n\n  Silence, the art of space.\n  Flow, the life of impermanence.\n  Essence, the spirit within materials.\n\n它们共同开启仅凭双眼无法追随的痕迹。"
+  },
+  "galleries": [
+    {
+      "id": "Silence",
+      "title": "Silence",
+      "description": "一个静谧的空间，让觉察加深，意义悄然浮现。",
+      "items": [
+        {
+          "id": "",
+          "title": "華道 IKEBANA - Japanese Flower Arrengement",
+          "image": "images/gallery/Silence/Flower Arrangement.jpeg",
+          "alt": "IKEBANA - Japanese Flower Arrengement"
+        },
+        {
+          "id": "",
+          "title": "枯山水 KARESASUI - Dry Landscape Garden",
+          "image": "images/gallery/Silence/Karesannsui.png",
+          "alt": "枯山水 KARESASUI - Dry Landscape Garden"
+        },
+        {
+          "id": "",
+          "title": "香道 KōDō - Japanese Way of Incense",
+          "image": "images/gallery/Silence/Smoke from Koro.png",
+          "alt": "香道 KōDō - Japanese Way of Incense"
+        }
+      ]
+    },
+    {
+      "id": "Flow",
+      "title": "Flow",
+      "description": "万物都在流转、老去、呼吸——每一次循环都加深着工艺与情感。",
+      "items": [
+        {
+          "id": "",
+          "title": "懐石  KAISEKI - Seasonal Japanese Haute-Cuisine  ",
+          "image": "images/gallery/Flow/Autumn Kaiseki.jpeg",
+          "alt": "懐石  KAISEKI - Seasonal Japanese Haute-Cuisine  "
+        },
+        {
+          "id": "",
+          "title": "桜 SAKURA - Cherry Blossoms",
+          "image": "images/gallery/Flow/Sakura Season.png",
+          "alt": "桜 SAKURA - Cherry Blossoms"
+        },
+        {
+          "id": "",
+          "title": "和菓子 WAGASHI - Japanese Handcrafted Sweets",
+          "image": "images/gallery/Flow/Wagashi snow.png",
+          "alt": "和菓子 WAGASHI - Japanese Handcrafted Sweets"
+        }
+      ]
+    },
+    {
+      "id": "Essence",
+      "title": "Essence",
+      "description": "一门工艺被提炼后的真相——不多一分，不少一毫。",
+      "items": [
+        {
+          "id": "",
+          "title": "友禅 YūZEN - Hand-Dyed Textile Art",
+          "image": "images/gallery/Essence/yuzen.png",
+          "alt": "友禅 YūZEN - Hand-Dyed Textile Art"
+        },
+        {
+          "id": "",
+          "title": "陶芸 Japanese Ceramics - Vessels Shaped by Hand",
+          "image": "images/gallery/Essence/Ceramic.png",
+          "alt": "陶芸 Japanese Ceramics - Vessels Shaped by Hand"
+        },
+        {
+          "id": "",
+          "title": "金継ぎ KINTSUGI - Art of Mending Cracks with Gold",
+          "image": "images/gallery/Essence/Kintsugi.png",
+          "alt": "金継ぎ KINTSUGI - Art of Mending Cracks with Gold"
+        }
+      ]
+    }
+  ],
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "在问题之前——简短的序言\n虽然日本的法规意味着我无法作为旅行社代理人，但这让我能够专注于最重要的事——\n帮助你找到诚实、有意义、以真诚而非便利塑造的体验。",
+    "items": [
+      {
+        "question": "你们会安排住宿或交通吗？",
+        "answer": "我无法直接为你预订，但我可以提供周到的建议——\n适合你节奏的街区、时机的考量，\n以及帮助你自行从容选择的实用提示。"
+      },
+      {
+        "question": "这些体验是固定的行程吗？",
+        "answer": "不是。它们不是旅游团。\n每一段体验都围绕你的好奇心、\n你的节奏，以及你希望探索的深度来塑造。\n一切都不匆忙；一切都不被套上模板。"
+      },
+      {
+        "question": "内容可以定制吗？",
+        "answer": "可以——在每段体验的特质范围内。\n我的角色是帮助你找到你所追寻之物最真实的版本，\n而不是拼凑临时的安排。\n我们一起塑造方向。"
+      },
+      {
+        "question": "图片和活动是最终版本吗？",
+        "answer": "还不是。\n这些构想仍在演变，视觉素材为AI生成，\n以在真实体验成形之前保护匠人的隐私。\n你的印象与愿望将温和地塑造接下来的内容。"
+      },
+      {
+        "question": "如果我需要口译或专业知识怎么办？",
+        "answer": "我无法正式提供口译服务，\n但我可以帮助你寻找合适的支持，\n并在每次探访前后提供清晰的书面简报，\n让你感到踏实、有准备。"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Your Opinions Are Important",
+    "description": "你的想法对我们非常重要。\n它们帮助这个项目以真实与用心不断完善，\n我们也持续从访客分享的见解中学习。\n感谢你为它的成长贡献力量。\n\n※ 欢迎你匿名分享想法。\n如果你希望收到回复，请附上你偏好的联系方式。"
+  }
+}

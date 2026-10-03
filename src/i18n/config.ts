@@ -40,11 +40,11 @@ export const localeShort: Record<Locale, string> = {
 };
 
 /**
- * 翻訳が完了しているロケール。
+ * 翻訳ファイルが存在するロケール。
  * ここに含まれないロケールは、コンテンツが無い場合デフォルト言語へフォールバックします。
- * （zh / ko / fr は「スロット」として用意済み。翻訳ファイルを置けば即座に有効になります）
+ * zh / ko / fr はドラフト翻訳（本文のみ）。タイトル・見出しラベルは英語のまま。
  */
-export const translatedLocales: Locale[] = ['en', 'ja'];
+export const translatedLocales: Locale[] = ['en', 'ja', 'zh', 'ko', 'fr'];
 
 /** ロケールが有効か判定 */
 export function isLocale(value: string | undefined | null): value is Locale {

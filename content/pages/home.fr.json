@@ -1,0 +1,156 @@
+{
+  "title": "Japan Rediscover",
+  "nav": [
+    {
+      "label": "Silence",
+      "href": "#Silence"
+    },
+    {
+      "label": "Flow",
+      "href": "#Flow"
+    },
+    {
+      "label": "Essence",
+      "href": "#Essence"
+    },
+    {
+      "label": "FAQ",
+      "href": "#faq"
+    }
+  ],
+  "hero": {
+    "title": "The Beauty Soaks In",
+    "subtitle": "Certaines beautés ne s'annoncent jamais — elles se déploient lentement, de façon indéniable.\nCeci est une invitation à apprécier le Japon de cette manière\n— quelque chose qui entre discrètement dans votre vie.",
+    "ctaText": "Join the Dialogue",
+    "bgImage": "images/hero/The Way.png",
+    "alt": "Serene Japanese temple garden with morning mist"
+  },
+  "founder": {
+    "id": "founder",
+    "preheading": "Our Visionary",
+    "title": "Meet Your Exploring Companion",
+    "description": "Je ne suis pas un guide qui sait tout, mais un compagnon d'exploration qui marche à vos côtés — découvrant ensemble les couches silencieuses de la beauté du Japon. Je suis né et j'ai grandi à Kyoto, dans une famille engagée depuis longtemps dans l'artisanat du kimono.\nAprès avoir passé huit ans à Londres et à Paris comme représentant d'un détaillant japonais, apportant des ressources européennes au Japon, puis vingt-cinq ans dans le secteur du luxe, j'ai fait l'expérience à la fois de l'artisanat méticuleux du luxe occidental et de l'élégance subtile et sans marque du Japon. Aujourd'hui, dans ce nouveau chapitre de ma vie, je souhaite partager et explorer cette beauté avec vous — avec douceur, sans prétention. Nous cherchons à saisir l'essence du Japon : l'artisanat attentif, la beauté dans la simplicité et le lien profond avec la nature. Il ne s'agit pas seulement d'esthétique — c'est une manière d'être silencieuse.",
+    "image": "images/founder/Bamboo Silence.jpeg",
+    "imageAlt": "Explore my thoughts further in the blog.",
+    "isSplit": true
+  },
+  "journeys": {
+    "id": "journeys",
+    "preheading": "A gentle guide to experiences",
+    "title": "The Concept of Journey Plans",
+    "description": "Les expériences que nous présentons ici sont actuellement en cours d'élaboration, façonnées par notre exploration continue de la beauté silencieuse du Japon. (basé à Kyoto pour le moment)\nCe n'est pas un circuit conventionnel — les ajustements sont les bienvenus, à condition qu'ils préservent la profondeur et l'authenticité de ce que nous explorons ensemble.\n*Veuillez noter que les images sont fournies comme des impressions anonymes générées par IA, vous invitant à imaginer l'essence de chaque voyage."
+  },
+  "intro": {
+    "id": "intro",
+    "preheading": "An Immersive Journey",
+    "title": "Three Quiet Dimensions of Japan",
+    "description": "Le Japon peut se visiter à travers des sites et des activités,\nmais sa nature plus profonde se révèle à travers trois dimensions silencieuses —\ndes lentilles qui rendent l'invisible clair.\n\n  Silence, the art of space.\n  Flow, the life of impermanence.\n  Essence, the spirit within materials.\n\nEnsemble, elles ouvrent des traces que l'œil seul ne peut suivre."
+  },
+  "galleries": [
+    {
+      "id": "Silence",
+      "title": "Silence",
+      "description": "Un espace paisible où la conscience s'approfondit et où le sens apparaît discrètement.",
+      "items": [
+        {
+          "id": "",
+          "title": "華道 IKEBANA - Japanese Flower Arrengement",
+          "image": "images/gallery/Silence/Flower Arrangement.jpeg",
+          "alt": "IKEBANA - Japanese Flower Arrengement"
+        },
+        {
+          "id": "",
+          "title": "枯山水 KARESASUI - Dry Landscape Garden",
+          "image": "images/gallery/Silence/Karesannsui.png",
+          "alt": "枯山水 KARESASUI - Dry Landscape Garden"
+        },
+        {
+          "id": "",
+          "title": "香道 KōDō - Japanese Way of Incense",
+          "image": "images/gallery/Silence/Smoke from Koro.png",
+          "alt": "香道 KōDō - Japanese Way of Incense"
+        }
+      ]
+    },
+    {
+      "id": "Flow",
+      "title": "Flow",
+      "description": "Toutes choses changent, vieillissent et respirent — chaque cycle approfondit l'artisanat et le sentiment.",
+      "items": [
+        {
+          "id": "",
+          "title": "懐石  KAISEKI - Seasonal Japanese Haute-Cuisine  ",
+          "image": "images/gallery/Flow/Autumn Kaiseki.jpeg",
+          "alt": "懐石  KAISEKI - Seasonal Japanese Haute-Cuisine  "
+        },
+        {
+          "id": "",
+          "title": "桜 SAKURA - Cherry Blossoms",
+          "image": "images/gallery/Flow/Sakura Season.png",
+          "alt": "桜 SAKURA - Cherry Blossoms"
+        },
+        {
+          "id": "",
+          "title": "和菓子 WAGASHI - Japanese Handcrafted Sweets",
+          "image": "images/gallery/Flow/Wagashi snow.png",
+          "alt": "和菓子 WAGASHI - Japanese Handcrafted Sweets"
+        }
+      ]
+    },
+    {
+      "id": "Essence",
+      "title": "Essence",
+      "description": "La vérité distillée d'un artisanat — rien de superflu, rien de manquant.",
+      "items": [
+        {
+          "id": "",
+          "title": "友禅 YūZEN - Hand-Dyed Textile Art",
+          "image": "images/gallery/Essence/yuzen.png",
+          "alt": "友禅 YūZEN - Hand-Dyed Textile Art"
+        },
+        {
+          "id": "",
+          "title": "陶芸 Japanese Ceramics - Vessels Shaped by Hand",
+          "image": "images/gallery/Essence/Ceramic.png",
+          "alt": "陶芸 Japanese Ceramics - Vessels Shaped by Hand"
+        },
+        {
+          "id": "",
+          "title": "金継ぎ KINTSUGI - Art of Mending Cracks with Gold",
+          "image": "images/gallery/Essence/Kintsugi.png",
+          "alt": "金継ぎ KINTSUGI - Art of Mending Cracks with Gold"
+        }
+      ]
+    }
+  ],
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "description": "Avant les questions — court préambule\nBien que la réglementation japonaise m'empêche d'agir en tant qu'agent de voyage, cela me permet de rester concentré sur l'essentiel —\nvous aider à trouver des expériences honnêtes, significatives et façonnées avec sincérité plutôt qu'avec commodité.",
+    "items": [
+      {
+        "question": "Organisez-vous l'hébergement ou le transport ?",
+        "answer": "Je ne peux pas les réserver directement, mais je peux vous offrir des conseils réfléchis —\ndes quartiers adaptés à votre rythme, des considérations de timing,\net des notes pratiques qui vous aident à choisir confortablement par vous-même."
+      },
+      {
+        "question": "Ces expériences sont-elles des itinéraires fixes ?",
+        "answer": "Non. Ce ne sont pas des circuits.\nChaque expérience est façonnée autour de votre curiosité,\nde votre rythme et du type de profondeur que vous souhaitez explorer.\nRien n'est précipité ; rien n'est préemballé."
+      },
+      {
+        "question": "Le contenu peut-il être personnalisé ?",
+        "answer": "Oui — dans le caractère de chaque expérience.\nMon rôle est de vous aider à trouver la version la plus authentique de ce que vous recherchez,\nnon d'assembler des arrangements rapides.\nNous façonnons la direction ensemble."
+      },
+      {
+        "question": "Les images et les activités sont-elles définitives ?",
+        "answer": "Pas encore.\nLes concepts évoluent, et les visuels sont générés par IA\nafin de protéger la vie privée des artisans jusqu'à ce que les expériences réelles prennent forme.\nVos impressions et vos souhaits façonneront doucement ce qui suit."
+      },
+      {
+        "question": "Et si j'ai besoin d'interprétation ou de connaissances spécialisées ?",
+        "answer": "Je ne peux pas fournir formellement de services d'interprétation,\nmais je peux vous aider à chercher le bon soutien\net vous offrir des briefings écrits clairs avant et après chaque visite\nafin que vous vous sentiez ancré et préparé."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Your Opinions Are Important",
+    "description": "Vos opinions comptent beaucoup pour nous.\nElles aident à affiner ce projet avec authenticité et intention,\net nous continuons d'apprendre des réflexions partagées par nos visiteurs.\nMerci de contribuer à son évolution.\n\n※ Vous êtes invité à partager vos réflexions de manière anonyme.\nSi vous souhaitez recevoir une réponse, veuillez inclure vos coordonnées préférées."
+  }
+}

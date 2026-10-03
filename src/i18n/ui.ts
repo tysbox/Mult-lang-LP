@@ -81,9 +81,9 @@ const en: UIStrings = {
 };
 
 const ja: UIStrings = {
-  contact: 'お問い合わせ',
+  contact: 'Contact',
   copyright: '© 2025. All rights reserved.',
-  languageSwitcherLabel: '言語',
+  languageSwitcherLabel: 'Language',
   form: {
     name: 'お名前',
     email: 'メールアドレス',
@@ -107,7 +107,7 @@ const ja: UIStrings = {
     wrongAnswer: '回答が正しくありません。もう一度お試しください。',
   },
   meta: {
-    title: 'Hidden Treasure Kyoto – 日本の精神文化への個人的な旅',
+    title: 'Hidden Treasure Kyoto – A Personal Journey into Japanese Spiritual Culture',
     description:
       '京都で育ち、後にロンドンとパリで暮らした者が提案する、京都の静かな精神的・美的な層への個人的な探求。神道、伝統的な儀式、季節の美しさ、そして日本文化の繊細な側面を考察します。',
   },
