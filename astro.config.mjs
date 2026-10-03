@@ -1,16 +1,18 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import node from '@astrojs/node';
+import tailwindcss from '@tailwindcss/vite';
 
 // For Cloudflare Pages production build, set BUILD_TARGET=cloudflare
 // to generate a fully static site (API handled by functions/api/).
-// For local dev, hybrid mode is used so /api/* routes are served by Astro dev server.
+// For local dev, an adapter is used so /api/* routes are served by the Astro dev server.
+//
+// Astro 5+ removed `output: 'hybrid'`; `'static'` now supports opting individual
+// routes out of prerendering via `export const prerender = false`.
 const isCloudflare = process.env.BUILD_TARGET === 'cloudflare';
 
 export default defineConfig({
-  output: isCloudflare ? 'static' : 'hybrid',
+  output: 'static',
   ...(isCloudflare ? {} : { adapter: node({ mode: 'standalone' }) }),
-  integrations: [tailwind()],
   // 多言語対応 (i18n)
   //   - defaultLocale: ルート `/` で表示する言語
   //   - locales: 対応言語（zh/ko/fr はスロット。翻訳ファイルを置けば有効化）
@@ -35,6 +37,7 @@ export default defineConfig({
     port: 3000,
   },
   vite: {
+    plugins: [tailwindcss()],
     server: {
       watch: {
         // content/以下のJSONファイルを監視して変更時に再ビルド

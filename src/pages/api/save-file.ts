@@ -2,7 +2,10 @@ import type { APIRoute } from 'astro';
 import fs from 'fs';
 import path from 'path';
 
-export const prerender = false;
+// Cloudflare Pages では functions/api/ が API を担当するため、
+// ビルド時は静的プリレンダリングに切り替える（アダプタ不要）。
+// ローカル開発時のみオンデマンド（node アダプタ）で動作させる。
+export const prerender = process.env.BUILD_TARGET === 'cloudflare';
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY; // owner/repo

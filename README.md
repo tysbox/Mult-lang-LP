@@ -2,6 +2,22 @@
 
 運用メモ: [TINA_EDITING_MEMO.md](/Users/tysbox/Desktop/biscene-lp-new/TINA_EDITING_MEMO.md)
 
+## 🧱 技術スタック（新仕様）
+
+| パッケージ | バージョン | 備考 |
+| --- | --- | --- |
+| Astro | `^7.3.5` | Node >= 22.12.0 必須 |
+| @astrojs/node | `^11.1.6` | ローカル開発用アダプタ |
+| Tailwind CSS | `^4.3.3` | CSS-first 設定（`@tailwindcss/vite`） |
+| @tailwindcss/vite | `^4.3.3` | v3 の `@astrojs/tailwind` を置換 |
+| @tailwindcss/forms | `^0.5.11` | `@plugin` で読み込み |
+| TinaCMS | `^3.14.2` | ローカル編集のみ（クラウドログインなし） |
+| @tinacms/cli | `^3.1.0` | |
+| TypeScript | `^5.9.3` | |
+
+- Node バージョンは `.nvmrc`（`22`）で固定。
+- Tailwind のテーマ設定は `src/styles/global.css` の `@theme` に集約（旧 `tailwind.config.mjs` は削除済み）。
+
 ## 🚀 初期セットアップ
 
 ### 1. リポジトリのクローンと依存関係のインストール
@@ -108,7 +124,19 @@ TinaCMS管理画面から直接編集可能:
 
 ## 🌐 デプロイ
 
-### Vercel
+### Cloudflare Pages（本番）
+
+```bash
+# 完全静的サイトを生成（API は functions/api/ が担当）
+BUILD_TARGET=cloudflare npm run build
+```
+
+- `BUILD_TARGET=cloudflare` を付けると `output: 'static'` になり、アダプタ不要でビルドできます。
+- 本番の `/api/*` は `functions/api/get-data.js` / `functions/api/save-file.js`（Cloudflare Pages Functions）が処理します。
+- このとき `src/pages/api/*.ts` はビルド時に静的プリレンダリングされます（アダプタ未設定エラー回避のため）。
+- ローカル開発時（`npm run dev`）は node アダプタが `/api/*` をオンデマンドで処理します。
+
+### Vercel / Netlify（参考）
 
 ```bash
 # Vercelにデプロイ

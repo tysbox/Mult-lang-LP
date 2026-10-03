@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* Tailwind CSS v4 は CSS-first 設定。
+   旧 tailwind.config.mjs の theme.extend を @theme に移植している。 */
+
+/* 旧 plugins: [require('@tailwindcss/forms')] */
+@plugin "@tailwindcss/forms";
+
+/* 旧 darkMode: 'class' */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* colors */
+  --color-primary: #6a4c9c; /* Imperial Purple */
+  --color-secondary: #cd412b; /* Vermilion Red */
+  --color-highlight: #d4af37; /* Delicate Gold */
+  --color-background-light: #f8f8f4; /* Silken White */
+  --color-background-dark: #141118; /* Deep Charcoal */
+  --color-text-light: #333333; /* Sumi Ink Black */
+  --color-text-dark: #f8f8f4; /* Silken White */
+  --color-subtle-light: #6b7280;
+  --color-subtle-dark: #9ca3af;
+  --color-border-light: #e5e7eb;
+  --color-border-dark: #374151;
+
+  /* fontFamily.display */
+  --font-display: Inter, "Noto Sans JP", sans-serif;
+
+  /* animation.fadeIn */
+  --animate-fadeIn: fadeIn 0.3s ease-in-out;
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* v3 のデフォルト border 色 (gray-200) を維持する。
+   v4 では border-* のデフォルトが currentColor に変更されたため。 */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}

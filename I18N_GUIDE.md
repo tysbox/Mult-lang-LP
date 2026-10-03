@@ -110,3 +110,36 @@ Astro の `i18n.fallback` は「既存ページを各フォールバック言語
 - `/` で JA を選ぶ → `/ja/`
 
 ヘッダー（デスクトップ・モバイル）に自動で組み込まれています。
+
+## 技術スタック（新仕様）
+
+このプロジェクトは以下のバージョンで動作します（旧プロジェクト `Biscene-LP` は旧仕様のまま凍結）。
+
+| パッケージ | バージョン |
+| --- | --- |
+| Astro | `^7.3.5`（Node >= 22.12.0） |
+| @astrojs/node | `^11.1.6` |
+| Tailwind CSS | `^4.3.3`（`@tailwindcss/vite`） |
+| TinaCMS | `^3.14.2` / `@tinacms/cli ^3.1.0` |
+
+### Astro 7 への移行で変更した点
+
+- `output: 'hybrid'` は廃止 → 常に `output: 'static'`（`export const prerender = false` で個別にオプトアウト可能）。
+- `@astrojs/tailwind` 統合を削除 → `@tailwindcss/vite` プラグインに置換。
+- `tsconfig.json` に `include: [".astro/types.d.ts", "**/*"]` / `exclude: ["dist"]` を追加。
+- `src/pages/api/*.ts` の `prerender` を `process.env.BUILD_TARGET === 'cloudflare'` に変更。
+  - Cloudflare ビルド時は静的化（アダプタ不要）、ローカル開発時のみオンデマンド。
+
+### Tailwind 4 への移行で変更した点
+
+- `tailwind.config.mjs` を削除し、`src/styles/global.css` の CSS-first 設定へ移植。
+  - `theme.extend` → `@theme`、`plugins` → `@plugin`、`darkMode: 'class'` → `@custom-variant dark`。
+- `MainLayout.astro` で `import '../styles/global.css';` を読み込み。
+- v3 のデフォルト border 色（gray-200）を `@layer base` で維持（v4 は `currentColor` が既定）。
+- クラス名の変更を適用: `shadow-sm`→`shadow-xs`、`rounded-sm`→`rounded-xs`、`backdrop-blur-sm`→`backdrop-blur-xs`、`outline-none`→`outline-hidden`、`ring`→`ring-3`、`flex-shrink-0`→`shrink-0`、`bg-gradient-to-b`→`bg-linear-to-b`。
+
+### 検証済み
+
+- `BUILD_TARGET=cloudflare npx astro build` → 6 ページ生成（`/`, `/ja/`, `/zh/`, `/ko/`, `/fr/`, `/admin/`）。
+- `npx astro check` → 0 errors / 0 warnings。
+- 開発サーバー全ルート HTTP 200。
