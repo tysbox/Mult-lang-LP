@@ -4,27 +4,63 @@ import path from 'path';
 
 const contentPath = path.join(process.cwd(), 'content/pages');
 const globalPath = path.join(process.cwd(), 'content/global');
-const homeFilePath = path.join(contentPath, 'home.json');
-const settingsFilePath = path.join(globalPath, 'settings.json');
 
-const pageData = JSON.parse(fs.readFileSync(homeFilePath, 'utf-8'));
-const globalSettings = JSON.parse(fs.readFileSync(settingsFilePath, 'utf-8'));
+// 編集対象の言語（en がデフォルト、他は home.<lang>.json / settings.<lang>.json）
+const LOCALES = [
+  { code: 'en', label: 'English', flag: '🇬🇧' },
+  { code: 'ja', label: '日本語', flag: '🇯🇵' },
+  { code: 'zh', label: '中文', flag: '🇨🇳' },
+  { code: 'ko', label: '한국어', flag: '🇰🇷' },
+  { code: 'fr', label: 'Français', flag: '🇫🇷' },
+];
 
-// safe defaults
-if (!pageData.hero) pageData.hero = { title: '', subtitle: '', ctaText: '', bgImage: '', alt: '' };
-if (!pageData.founder) pageData.founder = { id: 'founder', preheading: '', title: '', description: '', image: '', imageAlt: '', isSplit: false };
-if (!pageData.journeys) pageData.journeys = { id: 'journeys', preheading: '', title: '', description: '' };
-if (!pageData.intro) pageData.intro = { id: 'intro', preheading: '', title: '', description: '' };
-if (!Array.isArray(pageData.galleries)) pageData.galleries = [];
-if (!pageData.faq) pageData.faq = { title: '', description: '', items: [] };
-if (!Array.isArray(pageData.faq.items)) pageData.faq.items = [];
-if (!pageData.contact) pageData.contact = { title: '', description: '' };
+function readJson(filePath: string, fallback: any) {
+  try {
+    if (fs.existsSync(filePath)) return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch (e) {
+    console.warn('[admin] failed to read', filePath, e);
+  }
+  return fallback;
+}
 
-if (!globalSettings.header) globalSettings.header = { logo: '', menuItems: [] };
-if (!Array.isArray(globalSettings.header.menuItems)) globalSettings.header.menuItems = [];
-if (!globalSettings.footer) globalSettings.footer = { copyright: '', description: '', socialLinks: [], footerLinks: [] };
-if (!Array.isArray(globalSettings.footer.socialLinks)) globalSettings.footer.socialLinks = [];
-if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.footerLinks = [];
+// ページデータの安全なデフォルトを適用
+function withPageDefaults(pageData: any) {
+  if (!pageData.hero) pageData.hero = { title: '', subtitle: '', ctaText: '', bgImage: '', alt: '' };
+  if (!pageData.founder) pageData.founder = { id: 'founder', preheading: '', title: '', description: '', image: '', imageAlt: '', isSplit: false };
+  if (!pageData.journeys) pageData.journeys = { id: 'journeys', preheading: '', title: '', description: '' };
+  if (!pageData.intro) pageData.intro = { id: 'intro', preheading: '', title: '', description: '' };
+  if (!Array.isArray(pageData.galleries)) pageData.galleries = [];
+  if (!pageData.faq) pageData.faq = { title: '', description: '', items: [] };
+  if (!Array.isArray(pageData.faq.items)) pageData.faq.items = [];
+  if (!pageData.contact) pageData.contact = { title: '', description: '' };
+  return pageData;
+}
+
+// グローバル設定の安全なデフォルトを適用
+function withSettingsDefaults(globalSettings: any) {
+  if (!globalSettings.header) globalSettings.header = { logo: { image: '', text: '' }, menuItems: [] };
+  if (!Array.isArray(globalSettings.header.menuItems)) globalSettings.header.menuItems = [];
+  if (!globalSettings.footer) globalSettings.footer = { copyright: '', description: '', socialLinks: [], footerLinks: [] };
+  if (!Array.isArray(globalSettings.footer.socialLinks)) globalSettings.footer.socialLinks = [];
+  if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.footerLinks = [];
+  return globalSettings;
+}
+
+// en を基準（フォールバック元）として読み込む
+const enPage = withPageDefaults(readJson(path.join(contentPath, 'home.json'), {}));
+const enSettings = withSettingsDefaults(readJson(path.join(globalPath, 'settings.json'), {}));
+
+// 全言語分のコンテンツを読み込み（無ければ en にフォールバック）
+const localeData: Record<string, { page: any; settings: any }> = {};
+for (const { code } of LOCALES) {
+  const suffix = code === 'en' ? '' : `.${code}`;
+  const page = readJson(path.join(contentPath, `home${suffix}.json`), enPage);
+  const settings = readJson(path.join(globalPath, `settings${suffix}.json`), enSettings);
+  localeData[code] = {
+    page: withPageDefaults(page),
+    settings: withSettingsDefaults(settings),
+  };
+}
 ---
 
 <!DOCTYPE html>
@@ -49,6 +85,8 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
     .topbar button { padding: 10px 14px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
     .btn-save { background: #2563eb; color: #fff; }
     .btn-secondary { background: #e5e7eb; color: #111827; }
+    .lang-select { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-weight: 600; background: #fff; cursor: pointer; }
+    .lang-badge { margin-left: auto; font-size: 12px; color: #6b7280; }
 
     .message { position: sticky; top: 64px; margin-bottom: 12px; padding: 10px 12px; border-radius: 8px; display: none; }
     .message.success { background: #ecfdf3; color: #166534; border: 1px solid #bbf7d0; }
@@ -95,9 +133,16 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
 
     <main class="main">
       <div class="topbar">
+        <label for="langSelect" style="font-weight:600;font-size:13px;color:#374151;">🌐 Language</label>
+        <select id="langSelect" class="lang-select" onchange="switchLang(this.value)">
+          {LOCALES.map((l) => (
+            <option value={l.code}>{l.flag} {l.label}</option>
+          ))}
+        </select>
         <button class="btn-save" onclick="savePage()">💾 Save Page</button>
         <button class="btn-save" style="background:#10b981" onclick="saveGlobal()">🌐 Save Global</button>
         <button class="btn-secondary" onclick="previewPage()">👁️ Preview</button>
+        <span id="langBadge" class="lang-badge"></span>
       </div>
       <div id="message" class="message"></div>
 
@@ -217,16 +262,58 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
     </main>
   </div>
 
-  <script define:vars={{ pageDataJson: JSON.stringify(pageData), globalSettingsJson: JSON.stringify(globalSettings) }}>
-    window.pageData = JSON.parse(pageDataJson);
-    window.globalSettings = JSON.parse(globalSettingsJson);
-    
-    const pageData = window.pageData;
-    const globalSettings = window.globalSettings;
-    
+  <script define:vars={{ localeDataJson: JSON.stringify(localeData), localesJson: JSON.stringify(LOCALES) }}>
+    // 全言語のコンテンツを保持（切替時にメモリ上で退避・復元）
+    window.localeData = JSON.parse(localeDataJson);
+    window.locales = JSON.parse(localesJson);
+    window.currentLang = 'en';
+
+    window.pageData = window.localeData['en'].page;
+    window.globalSettings = window.localeData['en'].settings;
+
+    let pageData = window.pageData;
+    let globalSettings = window.globalSettings;
+
     console.log('FAQ Items loaded:', pageData.faq.items.length);
 
     function qs(id) { return document.getElementById(id); }
+
+    function updateLangBadge() {
+      const l = window.locales.find((x) => x.code === window.currentLang);
+      const badge = qs('langBadge');
+      if (badge) badge.textContent = l ? `Editing: ${l.flag} ${l.label}` : '';
+    }
+
+    // 現在のフォーム内容をメモリ上のオブジェクトへ退避
+    function stashCurrent() {
+      collectPageData();
+      window.globalSettings.header.logo = {
+        image: qs('headerLogoImage').value,
+        text: qs('headerLogoText').value,
+      };
+      window.globalSettings.footer.copyright = qs('footerCopyright').value;
+      window.globalSettings.footer.description = qs('footerDescription').value;
+      window.localeData[window.currentLang] = {
+        page: window.pageData,
+        settings: window.globalSettings,
+      };
+    }
+
+    // 言語切替（未保存の編集はメモリ上に保持）
+    function switchLang(code) {
+      if (!window.localeData[code] || code === window.currentLang) return;
+      stashCurrent();
+
+      window.currentLang = code;
+      window.pageData = window.localeData[code].page;
+      window.globalSettings = window.localeData[code].settings;
+      pageData = window.pageData;
+      globalSettings = window.globalSettings;
+
+      initForm();
+      updateLangBadge();
+      showMessage(`Switched to ${code.toUpperCase()} — 未保存の変更はメモリ上に保持されています`, 'success');
+    }
 
     function showMessage(text, type='success') {
       const el = qs('message');
@@ -433,6 +520,11 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
       renderFooterLinks();
 
       updateImagePreview('heroBgImage','heroImagePreview','heroImagePlaceholder');
+      updateImagePreview('founderImage','founderImagePreview','founderImagePlaceholder');
+    }
+
+    // 画像プレビューの input リスナーは一度だけ登録（言語切替で重複しないように）
+    function setupImageListeners() {
       qs('heroBgImage').addEventListener('input', () => updateImagePreview('heroBgImage','heroImagePreview','heroImagePlaceholder'));
       qs('founderImage').addEventListener('input', () => updateImagePreview('founderImage','founderImagePreview','founderImagePlaceholder'));
     }
@@ -473,14 +565,16 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
 
     async function savePage() {
       collectPageData();
+      const suffix = window.currentLang === 'en' ? '' : `.${window.currentLang}`;
+      const filename = `home${suffix}.json`;
       try {
         const res = await fetch('/api/save-file', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: 'home.json', content: JSON.stringify(window.pageData, null, 2) })
+          body: JSON.stringify({ filename, content: JSON.stringify(window.pageData, null, 2) })
         });
         if (!res.ok) throw new Error('Save failed');
-        showMessage('Page saved', 'success');
+        showMessage(`Page saved (${filename})`, 'success');
       } catch (err) {
         console.error(err);
         showMessage('Save failed: ' + err.message, 'error');
@@ -488,6 +582,8 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
     }
 
     async function saveGlobal() {
+      const suffix = window.currentLang === 'en' ? '' : `.${window.currentLang}`;
+      const filename = `settings${suffix}.json`;
       try {
         // Update logo data
         window.globalSettings.header.logo = {
@@ -507,10 +603,10 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
         const res = await fetch('/api/save-file', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: '../global/settings.json', content: JSON.stringify(window.globalSettings, null, 2) })
+          body: JSON.stringify({ filename: `../global/${filename}`, content: JSON.stringify(window.globalSettings, null, 2) })
         });
         if (!res.ok) throw new Error('Global save failed');
-        showMessage('Global settings saved', 'success');
+        showMessage(`Global settings saved (${filename})`, 'success');
       } catch (err) {
         console.error(err);
         showMessage('Global save failed: ' + err.message, 'error');
@@ -519,10 +615,12 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
 
     let previewWindow = null;
     function previewPage() {
+      const prefix = window.currentLang === 'en' ? '' : `/${window.currentLang}`;
+      const target = `${prefix}/`;
       if (!previewWindow || previewWindow.closed) {
-        previewWindow = window.open('/', 'preview-window');
+        previewWindow = window.open(target, 'preview-window');
       } else {
-        previewWindow.location.href = '/';
+        previewWindow.location.href = target;
         previewWindow.focus();
       }
     }
@@ -535,6 +633,7 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
     window.savePage = savePage;
     window.saveGlobal = saveGlobal;
     window.previewPage = previewPage;
+    window.switchLang = switchLang;
     window.addGallery = addGallery;
     window.deleteGallery = deleteGallery;
     window.addGalleryItem = addGalleryItem;
@@ -549,6 +648,8 @@ if (!Array.isArray(globalSettings.footer.footerLinks)) globalSettings.footer.foo
     window.deleteFooterLink = deleteFooterLink;
 
     initForm();
+    setupImageListeners();
+    updateLangBadge();
 
     // Check whether server-side GitHub read/write is configured. If not, disable Save UI and attempt public raw fallback.
     (async function checkEditingEnabled(){

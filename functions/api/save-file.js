@@ -21,19 +21,21 @@ export async function onRequest(context) {
     const { filename, content } = data;
     if (!filename || !content) return new Response(JSON.stringify({ success: false, error: 'filename and content required' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
 
-    // Basic path validation
-    if (filename.includes('..') && !filename.includes('../global/settings.json')) {
-      return new Response(JSON.stringify({ success: false, error: 'Invalid file path' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    }
+    // ファイル名のホワイトリスト検証（ディレクトリトラバーサル対策）
+    const TRANSLATED_LOCALES = ['ja', 'zh', 'ko', 'fr'];
+    const allowedPageFiles = ['home.json', ...TRANSLATED_LOCALES.map((l) => `home.${l}.json`)];
+    const allowedSettingsFiles = ['settings.json', ...TRANSLATED_LOCALES.map((l) => `settings.${l}.json`)];
 
-    // resolve repo path
+    // basename でディレクトリ部分を除去（../global/settings.json も settings.json として扱う）
+    const baseName = filename.split('/').pop();
+
     let repoPath;
-    if (filename.includes('global/settings.json')) {
-      repoPath = 'content/global/settings.json';
+    if (allowedSettingsFiles.includes(baseName)) {
+      repoPath = `content/global/${baseName}`;
+    } else if (allowedPageFiles.includes(baseName)) {
+      repoPath = `content/pages/${baseName}`;
     } else {
-      // strip leading slashes
-      const clean = filename.replace(/^\/+/, '');
-      repoPath = `content/pages/${clean}`;
+      return new Response(JSON.stringify({ success: false, error: `Invalid file name: ${baseName}` }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
     if (!GITHUB_TOKEN || !GITHUB_REPOSITORY) {

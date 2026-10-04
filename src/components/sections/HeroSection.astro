@@ -1,9 +1,11 @@
 ---
 import type { HeroContent } from '../../types';
+import { normalizeAssetPath } from '../../i18n';
 
 interface Props extends HeroContent {}
 
 const { title, subtitle, ctaText, bgImage, alt } = Astro.props;
+const bgImageUrl = normalizeAssetPath(bgImage);
 
 // Reverted to simple text interpolation (no html conversion)
 ---
@@ -13,7 +15,7 @@ const { title, subtitle, ctaText, bgImage, alt } = Astro.props;
   <div 
     id="hero-bg"
     class="absolute inset-0 w-full h-full bg-cover bg-center will-change-transform"
-    style={`background-image: url("${bgImage}")`}
+    style={`background-image: url("${bgImageUrl}")`}
     role="img"
     aria-label={alt}
   />

@@ -1,4 +1,5 @@
 ---
+import { normalizeAssetPath } from '../../i18n';
 import type { SectionContent } from '../../types';
 
 interface Props extends SectionContent {
@@ -40,7 +41,7 @@ const {
         {image && (
           <div>
             <img 
-              src={image} 
+              src={normalizeAssetPath(image)} 
               alt={imageAlt || title} 
               class="rounded-lg shadow-xl aspect-square object-cover w-full max-w-sm mx-auto"
             />

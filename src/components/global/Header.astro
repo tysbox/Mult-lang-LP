@@ -1,6 +1,6 @@
 ---
 import LanguageSwitcher from './LanguageSwitcher.astro';
-import { defaultLocale, getUIStrings, localizedHref, type Locale } from '../../i18n';
+import { defaultLocale, getUIStrings, localizedHref, normalizeAssetPath, type Locale } from '../../i18n';
 
 export interface NavItem {
   label: string;
@@ -51,7 +51,7 @@ const contactHref = localizedHref(lang, '#contact');
   <a href={homeHref} class="flex items-center gap-3 text-text-light dark:text-text-dark">
     <div class="flex flex-col items-center">
       {logoData.image && (
-        <img src={logoData.image} alt={logoData.text || siteName} class="h-10 w-auto object-contain" />
+        <img src={normalizeAssetPath(logoData.image)} alt={logoData.text || siteName} class="h-10 w-auto object-contain" />
       )}
       {logoData.text && (
         <p class="text-xs font-medium leading-tight text-center mt-1">{logoData.text}</p>

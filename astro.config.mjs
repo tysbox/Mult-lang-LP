@@ -2,9 +2,10 @@ import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 
-// For Cloudflare Pages production build, set BUILD_TARGET=cloudflare
-// to generate a fully static site (API handled by functions/api/).
-// For local dev, an adapter is used so /api/* routes are served by the Astro dev server.
+// For Cloudflare Pages production build, set BUILD_TARGET=cloudflare.
+// Cloudflare Pages では functions/api/ が API を担当するため、
+// src/pages/api/ 配下の API ルートをビルドに含めません。
+// （API ソースは src/api/ に保管し、ローカル開発時のみ src/pages/api/ へ複製）
 //
 // Astro 5+ removed `output: 'hybrid'`; `'static'` now supports opting individual
 // routes out of prerendering via `export const prerender = false`.

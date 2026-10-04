@@ -52,3 +52,27 @@ export function switchLocalePath(currentPath: string, target: Locale): string {
   if (!rest) return `${base}${hashSuffix}`;
   return `${base}${rest}${hashSuffix}`;
 }
+
+/**
+ * 画像などの静的アセットパスを正規化。
+ *
+ * コンテンツ JSON 内の画像パスは歴史的経緯で複数の形式が混在しています:
+ *   - "images/hero/x.png"        （相対パス — ルートでは動くが /ja/ では壊れる）
+ *   - "/images/hero/x.png"       （絶対パス — どこでも動く）
+ *
+ * この関数は先頭にスラッシュを付与して常に絶対パスへ正規化します。
+ * これにより /ja/ や /zh/ などロケールプレフィックス付きの URL でも
+ * 画像が正しく解決されます。
+ *
+ * 例:
+ *   normalizeAssetPath('images/hero/x.png')  → '/images/hero/x.png'
+ *   normalizeAssetPath('/images/hero/x.png') → '/images/hero/x.png'
+ *   normalizeAssetPath('https://example.com/x.png') → そのまま返す
+ */
+export function normalizeAssetPath(p: string | undefined | null): string {
+  if (!p) return '';
+  // 外部URL・data URI はそのまま
+  if (/^(https?:)?\/\//.test(p) || p.startsWith('data:')) return p;
+  // 先頭スラッシュを正規化
+  return `/${p.replace(/^\/+/, '')}`;
+}

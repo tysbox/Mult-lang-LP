@@ -30,28 +30,24 @@ function base64Decode(b64: string) {
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // ボディは一度だけ読む（request.json() 失敗時に request.text() が空になるのを防ぐ）
     let data: any;
     try {
-      data = await request.json();
-    } catch (e) {
-      try {
-        const rawBody = await request.text();
-        if (!rawBody) {
-          console.error('Empty request body received');
-          return new Response(
-            JSON.stringify({ success: false, error: 'Empty request body' }),
-            { status: 400, headers: { 'Content-Type': 'application/json' } }
-          );
-        }
-
-        data = JSON.parse(rawBody);
-      } catch (textError) {
-        console.error('Failed to parse request body:', e, textError);
+      const rawBody = await request.text();
+      if (!rawBody) {
+        console.error('Empty request body received');
         return new Response(
-          JSON.stringify({ success: false, error: 'Invalid JSON format' }),
+          JSON.stringify({ success: false, error: 'Empty request body' }),
           { status: 400, headers: { 'Content-Type': 'application/json' } }
         );
       }
+      data = JSON.parse(rawBody);
+    } catch (parseError) {
+      console.error('Failed to parse request body:', parseError);
+      return new Response(
+        JSON.stringify({ success: false, error: 'Invalid JSON format' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     const { filename, content } = data;
@@ -63,27 +59,28 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // ファイルパスのバリデーション（ディレクトリトラバーサル攻撃対策）
-    const normalizedFilename = path.normalize(filename);
-    if (normalizedFilename.includes('..')) {
-      // グローバル設定ファイル保存の場合、../global/settings.json を許可
-      if (!normalizedFilename.includes('../global/settings.json')) {
-        return new Response(
-          JSON.stringify({ success: false, error: '不正なファイルパスです' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
-    }
+    // ファイル名のホワイトリスト検証（ディレクトリトラバーサル対策）
+    // 許可: home.json / home.<lang>.json / settings.json / settings.<lang>.json
+    const TRANSLATED_LOCALES = ['ja', 'zh', 'ko', 'fr'];
+    const allowedPageFiles = new Set(['home.json', ...TRANSLATED_LOCALES.map((l) => `home.${l}.json`)]);
+    const allowedSettingsFiles = new Set(['settings.json', ...TRANSLATED_LOCALES.map((l) => `settings.${l}.json`)]);
 
-    // ファイルパスを構築
-    let contentPathLocal;
-    let contentPathRepo;
-    if (normalizedFilename.includes('global/settings.json')) {
-      contentPathLocal = path.join(process.cwd(), 'content/global/settings.json');
-      contentPathRepo = 'content/global/settings.json';
+    // basename でディレクトリ部分を除去（../global/settings.json も settings.json として扱う）
+    const baseName = path.basename(filename);
+
+    let contentPathLocal: string;
+    let contentPathRepo: string;
+    if (allowedSettingsFiles.has(baseName)) {
+      contentPathLocal = path.join(process.cwd(), 'content/global', baseName);
+      contentPathRepo = `content/global/${baseName}`;
+    } else if (allowedPageFiles.has(baseName)) {
+      contentPathLocal = path.join(process.cwd(), 'content/pages', baseName);
+      contentPathRepo = `content/pages/${baseName}`;
     } else {
-      contentPathLocal = path.join(process.cwd(), 'content/pages', normalizedFilename);
-      contentPathRepo = `content/pages/${normalizedFilename}`;
+      return new Response(
+        JSON.stringify({ success: false, error: `不正なファイル名です: ${baseName}` }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // JSONのバリデーション

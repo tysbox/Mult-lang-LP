@@ -21,10 +21,16 @@ function base64Decode(b64: string) {
   throw new Error('Base64 decode not available');
 }
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async ({ url }) => {
   try {
-    const homeRepoPath = 'content/pages/home.json';
-    const settingsRepoPath = 'content/global/settings.json';
+    // 言語パラメータ（未指定・不正値は en にフォールバック）
+    const TRANSLATED_LOCALES = ['ja', 'zh', 'ko', 'fr'];
+    const requested = url.searchParams.get('lang') || 'en';
+    const lang = TRANSLATED_LOCALES.includes(requested) ? requested : 'en';
+    const suffix = lang === 'en' ? '' : `.${lang}`;
+
+    const homeRepoPath = `content/pages/home${suffix}.json`;
+    const settingsRepoPath = `content/global/settings${suffix}.json`;
 
     // If GitHub env is available, prefer GitHub API to fetch content (works on Cloudflare too)
     if (GITHUB_TOKEN && GITHUB_REPOSITORY) {
@@ -53,7 +59,7 @@ export const GET: APIRoute = async () => {
         const globalSettings = JSON.parse(base64Decode(settingsJson.content));
 
         return new Response(
-          JSON.stringify({ success: true, page: pageData, settings: globalSettings }),
+          JSON.stringify({ success: true, lang, page: pageData, settings: globalSettings }),
           { status: 200, headers: { 'Content-Type': 'application/json' } }
         );
       } catch (error) {
@@ -75,7 +81,7 @@ export const GET: APIRoute = async () => {
         const pageData = await rawHome.json();
         const globalSettings = await rawSettings.json();
         return new Response(
-          JSON.stringify({ success: true, page: pageData, settings: globalSettings }),
+          JSON.stringify({ success: true, lang, page: pageData, settings: globalSettings }),
           { status: 200, headers: { 'Content-Type': 'application/json' } }
         );
       }
@@ -84,15 +90,19 @@ export const GET: APIRoute = async () => {
       // proceed to local fallback
     }
 
-    // Fallback: local filesystem read
-    const homeFilePath = path.join(process.cwd(), 'content/pages/home.json');
-    const settingsFilePath = path.join(process.cwd(), 'content/global/settings.json');
+    // Fallback: local filesystem read（指定言語が無ければ en にフォールバック）
+    const readLocal = (relPath: string) => {
+      const abs = path.join(process.cwd(), relPath);
+      return fs.existsSync(abs) ? JSON.parse(fs.readFileSync(abs, 'utf-8')) : null;
+    };
 
-    const pageData = JSON.parse(fs.readFileSync(homeFilePath, 'utf-8'));
-    const globalSettings = JSON.parse(fs.readFileSync(settingsFilePath, 'utf-8'));
+    const pageData =
+      readLocal(homeRepoPath) ?? readLocal('content/pages/home.json');
+    const globalSettings =
+      readLocal(settingsRepoPath) ?? readLocal('content/global/settings.json');
 
     return new Response(
-      JSON.stringify({ success: true, page: pageData, settings: globalSettings }),
+      JSON.stringify({ success: true, lang, page: pageData, settings: globalSettings }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {

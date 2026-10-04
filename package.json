@@ -3,8 +3,10 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "predev": "node scripts/sync-api-routes.mjs",
     "dev": "astro dev --host 0.0.0.0 --port 3000",
     "tina:dev": "tinacms dev -c \"astro dev --host 0.0.0.0 --port 3000\"",
+    "prebuild": "BUILD_TARGET=cloudflare node scripts/sync-api-routes.mjs",
     "build": "BUILD_TARGET=cloudflare astro build",
     "build:dev": "astro build",
     "preview": "astro preview",

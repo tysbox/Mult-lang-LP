@@ -2,33 +2,33 @@
   "title": "Japan Rediscover",
   "nav": [
     {
-      "label": "静寂",
+      "label": "Silence",
       "href": "#Silence"
     },
     {
-      "label": "流れ",
+      "label": "Flow",
       "href": "#Flow"
     },
     {
-      "label": "本質",
+      "label": "Essence",
       "href": "#Essence"
     },
     {
-      "label": "よくあるご質問",
+      "label": "FAQ",
       "href": "#faq"
     }
   ],
   "hero": {
-    "title": "美は、静かに沁み込む",
+    "title": "The Beauty Soaks In",
     "subtitle": "美は、自らを主張しないことがあります — ゆっくりと、しかし確かに姿を現します。\nこれは、そんなふうに日本を味わうための招待状です\n— あなたの暮らしに静かに入り込む何か。",
-    "ctaText": "対話に加わる",
+    "ctaText": "Join the Dialogue",
     "bgImage": "images/hero/The Way.png",
     "alt": "朝霧に包まれた静かな日本の寺院の庭"
   },
   "founder": {
     "id": "founder",
-    "preheading": "私たちの案内人",
-    "title": "あなたの探索の伴走者",
+    "preheading": "Our Visionary",
+    "title": "Meet Your Exploring Companion",
     "description": "私はすべてを知るガイドではなく、あなたの隣を歩く探索の伴走者です — 日本の美の静かな層を、ともに見つけていきます。私は京都で生まれ育ち、代々着物の仕事に携わる家に生まれました。\nロンドンとパリで8年間、日本の小売企業の代表として欧州のリソースを日本に届ける仕事に携わり、その後25年間はラグジュアリービジネスに従事する中で、西洋ラグジュアリーの緻密な職人技と、日本の控えめで無名のエレガンスの両方を経験してきました。そして人生の新しい章で、この美しさをあなたと分かち合い、ともに探求したいと考えています — 気負うことなく、静かに。私たちは日本の本質を捉えようとしています。心を込めた職人技、シンプルさの中の美、そして自然との深い結びつき。これは単なる美意識ではなく — 静かな生き方なのです。",
     "image": "images/founder/Bamboo Silence.jpeg",
     "imageAlt": "私の考えはブログでさらにご覧いただけます。",
@@ -36,21 +36,20 @@
   },
   "journeys": {
     "id": "journeys",
-    "preheading": "体験への静かな手引き",
-    "title": "旅のプランという考え方",
-    "description": "ここでご紹介する体験は現在準備中で、日本の静かな美しさへの私たちの探求によって形づくられています。（当面は京都を拠点に）\nこれは一般的なツアーではありません — ともに探求するものの深さと真正性が保たれる限り、調整も歓迎します。\n※画像は匿名のAI生成によるイメージです。それぞれの旅の本質を想像していただくためのものです。",
-    "isSplit": false
+    "preheading": "A gentle guide to experiences",
+    "title": "The Concept of Journey Plans",
+    "description": "ここでご紹介する体験は現在準備中で、日本の静かな美しさへの私たちの探求によって形づくられています。（当面は京都を拠点に）\nこれは一般的なツアーではありません — ともに探求するものの深さと真正性が保たれる限り、調整も歓迎します。\n※画像は匿名のAI生成によるイメージです。それぞれの旅の本質を想像していただくためのものです。"
   },
   "intro": {
     "id": "intro",
-    "preheading": "没入する旅",
-    "title": "日本の三つの静かな次元",
+    "preheading": "An Immersive Journey",
+    "title": "Three Quiet Dimensions of Japan",
     "description": "日本は、見どころやアクティビティを通じて訪れることもできますが、\nそのより深い本質は、三つの静かな次元を通して現れます —\n見えないものを明確にする三つのレンズです。\n\n  静寂 — 空間の芸術。\n  流れ — 無常の生命。\n  本質 — 素材の中の精神。\n\nともに、目だけでは追えない痕跡を開いていきます。"
   },
   "galleries": [
     {
       "id": "Silence",
-      "title": "静寂",
+      "title": "Silence",
       "description": "意識が深まり、意味が静かに現れる静かな空間。",
       "items": [
         {
@@ -75,7 +74,7 @@
     },
     {
       "id": "Flow",
-      "title": "流れ",
+      "title": "Flow",
       "description": "すべては移ろい、老い、息づく — その循環が技と感情を深めていきます。",
       "items": [
         {
@@ -100,7 +99,7 @@
     },
     {
       "id": "Essence",
-      "title": "本質",
+      "title": "Essence",
       "description": "技の蒸留された真実 — 余分もなく、欠けもない。",
       "items": [
         {
@@ -125,7 +124,7 @@
     }
   ],
   "faq": {
-    "title": "よくあるご質問",
+    "title": "Frequently Asked Questions",
     "description": "ご質問の前に — 短い前置き\n日本の規制により、私は旅行代理店として活動することはできませんが、そのおかげで最も大切なことに集中できます —\n便利さよりも、誠実で意味のある体験をあなたが見つけるお手伝いをすることです。",
     "items": [
       {
@@ -151,7 +150,7 @@
     ]
   },
   "contact": {
-    "title": "あなたのご意見は大切です",
+    "title": "Your Opinions Are Important",
     "description": "あなたのご感想は私たちにとって大きな価値があります。\nそれはこのプロジェクトを真正さと意図をもって磨き上げる助けとなり、\n私たちは訪問者の皆さまから寄せられる洞察から学び続けています。\nその進化にご協力いただきありがとうございます。\n\n※匿名でのご意見も歓迎します。\n返信をご希望の場合は、ご希望の連絡先をご記載ください。"
   }
 }
