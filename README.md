@@ -1,6 +1,30 @@
 # Japan Rediscover - Astro + TinaCMS
 
-運用メモ: [TINA_EDITING_MEMO.md](/Users/tysbox/Desktop/biscene-lp-new/TINA_EDITING_MEMO.md)
+運用メモ: [TINA_EDITING_MEMO.md](./TINA_EDITING_MEMO.md)
+
+## ⚡ ワンクリックで編集を始める
+
+Finder で `start.command` をダブルクリックすると、以下が自動で行われます。
+
+1. Node 22 の解決（nvm / volta / Homebrew を自動検出）
+2. `node_modules` の健全性チェック（壊れていれば外部キャッシュから復旧）
+3. Git インデックスの自己修復
+4. 開発サーバーの起動（`http://127.0.0.1:3000`）
+5. Safari で **編集画面（`/admin/`）** と **EN サイト（`/`）** を同一ウィンドウの別タブで起動
+
+ターミナルから実行する場合:
+
+```bash
+npm run edit
+```
+
+| 環境変数 | 効果 |
+| --- | --- |
+| `MA_NO_OPEN=1` | ブラウザを開かない |
+| `MA_OPEN_SITE=0` | 編集画面のみ開く（EN サイトを開かない） |
+| `MA_SKIP_GIT=1` | Git インデックス修復をスキップ |
+
+ログ: `${TMPDIR:-/tmp}/biscene-lp-start.log`
 
 ## 🧱 技術スタック（新仕様）
 
@@ -50,15 +74,18 @@ npm run dev
 ```
 
 以下が起動します:
-- Astroサイト: `http://localhost:4321`
-- TinaCMS管理画面: `http://localhost:4321/admin/index.html`
+- Astroサイト: `http://localhost:3000`
+- 編集画面（カスタム管理画面）: `http://localhost:3000/admin/`
+
+> ワンクリックで始める場合は `start.command` をダブルクリック（または `npm run edit`）。
+> Safari で編集画面と EN サイトが同時に開きます。
 
 ## 📝 コンテンツ編集方法
 
-### TinaCMS管理画面から編集
+### 編集画面（`/admin/`）から編集
 
-1. `http://localhost:4321/admin/index.html` にアクセス
-2. "Pages" → "home" を選択
+1. `http://localhost:3000/admin/` にアクセス
+2. 言語セレクタで `en` / `ja` / `zh` / `ko` / `fr` を切り替え
 3. 各セクションを編集:
    - **ヒーローセクション**: タイトル、背景画像、CTAボタン
    - **創業者セクション**: プレヘッディング、説明文、画像
@@ -66,11 +93,7 @@ npm run dev
    - **FAQセクション**: 質問と回答を追加/編集
    - **お問い合わせ**: タイトルと説明文
 
-4. "Global Settings" で以下を編集:
-   - サイト名
-   - ナビゲーションメニュー
-   - ソーシャルリンク
-   - コピーライト
+4. 保存すると `content/pages/home.<lang>.json` に書き込まれ、EN サイトのタブが自動で反映されます（ホットリロード）。
 
 ### JSONファイルから直接編集
 

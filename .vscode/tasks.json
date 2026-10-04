@@ -2,16 +2,23 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Biscene-LP Edit (one-click)",
+			"type": "shell",
+			"command": "bash scripts/start-editing.sh",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
 			"label": "Biscene-LP Dev Start",
 			"type": "shell",
-			"command": "export PATH=\"/opt/homebrew/opt/node@20/bin:$PATH\" && npm run dev",
+			"command": "npm run dev",
 			"isBackground": true,
 			"problemMatcher": []
 		},
 		{
 			"label": "Biscene-LP Dev Check",
 			"type": "shell",
-			"command": "export PATH=\"/opt/homebrew/opt/node@20/bin:$PATH\" && echo 'cwd:' && pwd && ls -ld node_modules && if [ -L node_modules ]; then echo 'TYPE=SYMLINK'; else echo 'TYPE=REALDIR'; fi && curl -s -o /dev/null -w 'HTTP3000:%{http_code}\\n' http://127.0.0.1:3000/ || true",
+			"command": "echo 'cwd:' && pwd && ls -ld node_modules && if [ -L node_modules ]; then echo 'TYPE=SYMLINK'; else echo 'TYPE=REALDIR'; fi && curl -s -o /dev/null -w 'HTTP3000:%{http_code}\\n' http://127.0.0.1:3000/ || true",
 			"isBackground": false,
 			"problemMatcher": []
 		},

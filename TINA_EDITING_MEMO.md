@@ -3,9 +3,12 @@
 ## Current Editing Flow
 
 - Local editing entry point is `http://localhost:3000/admin/` during `npm run dev`.
+- One-click launcher: double-click `start.command` (or run `npm run edit`).
+  It starts the dev server and opens Safari with the editor (`/admin/`) and the EN site (`/`) as two tabs in the same window.
 - The active editor route is `src/pages/admin/index.astro`.
 - Content is stored in `content/pages/home.json` and `content/global/settings.json`.
-- Runtime save/read APIs are `src/pages/api/save-file.ts` and `src/pages/api/get-data.ts`.
+- Runtime save/read APIs are `src/api/save-file.ts` and `src/api/get-data.ts`
+  (copied to `src/pages/api/` by `scripts/sync-api-routes.mjs` for local dev; that folder is generated and gitignored).
 
 ## Required Local Commands
 
@@ -16,6 +19,16 @@ npm run dev
 
 - Astro runs in `hybrid` mode with `@astrojs/node` so local POST saves work.
 - If port `3000` is already used, Astro will auto-select the next free port.
+
+## Launcher Environment Variables
+
+| Variable | Effect |
+| --- | --- |
+| `MA_NO_OPEN=1` | Do not open any browser |
+| `MA_OPEN_SITE=0` | Open only the editor, not the EN site |
+| `MA_SKIP_GIT=1` | Skip the Git index self-repair step |
+
+Log file: `${TMPDIR:-/tmp}/biscene-lp-start.log`
 
 ## Safe Editing Rules
 
